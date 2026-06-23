@@ -168,14 +168,14 @@ async function fetchNpmWeekly(
   try {
     // Verify the package belongs to this repo (skipped for explicit hints).
     if (!trusted) {
-      const metaRes = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
-      if (!metaRes.ok) return null;
+      const metaRes = await fetchRetry(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
+      if (!metaRes?.ok) return null;
       const meta = (await metaRes.json()) as { repository?: string | { url?: string } };
       const repoUrl = typeof meta.repository === 'string' ? meta.repository : meta.repository?.url;
       if (!linksToRepo(repoUrl, owner, repo)) return null;
     }
-    const res = await fetch(`https://api.npmjs.org/downloads/point/last-week/${encodeURIComponent(name)}`);
-    if (!res.ok) return null;
+    const res = await fetchRetry(`https://api.npmjs.org/downloads/point/last-week/${encodeURIComponent(name)}`);
+    if (!res?.ok) return null;
     const json = (await res.json()) as { downloads?: number; error?: string };
     if (json.error || typeof json.downloads !== 'number' || json.downloads === 0) return null;
     return { name, downloads: json.downloads };
@@ -189,8 +189,8 @@ async function fetchPypiWeekly(
 ): Promise<{ name: string; downloads: number } | null> {
   try {
     if (!trusted) {
-      const metaRes = await fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`);
-      if (!metaRes.ok) return null;
+      const metaRes = await fetchRetry(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`);
+      if (!metaRes?.ok) return null;
       const meta = (await metaRes.json()) as {
         info?: { home_page?: string; project_urls?: Record<string, string> };
       };
@@ -200,8 +200,8 @@ async function fetchPypiWeekly(
       ];
       if (!urls.some(u => linksToRepo(u, owner, repo))) return null;
     }
-    const res = await fetch(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`);
-    if (!res.ok) return null;
+    const res = await fetchRetry(`https://pypistats.org/api/packages/${encodeURIComponent(name)}/recent`);
+    if (!res?.ok) return null;
     const json = (await res.json()) as { data?: { last_week?: number } };
     const weekly = json.data?.last_week;
     if (typeof weekly !== 'number' || weekly === 0) return null;
@@ -209,4 +209,26 @@ async function fetchPypiWeekly(
   } catch {
     return null;
   }
+}
+
+/**
+ * fetch with backoff on transient failures (429 / 5xx / network error), so a
+ * package-registry rate limit during a bulk run doesn't null out a real signal.
+ * A 404 (package genuinely absent) returns immediately — not retried.
+ */
+async function fetchRetry(url: string, attempts = 4): Promise<Response | null> {
+  let last: Response | null = null;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok || res.status === 404) return res;
+      last = res; // 429 / 5xx — retry
+    } catch {
+      last = null; // network error — retry
+    }
+    if (i < attempts - 1) {
+      await new Promise(r => setTimeout(r, 500 * 2 ** i + Math.random() * 250));
+    }
+  }
+  return last;
 }
