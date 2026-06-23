@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { GitHubApiReader } from '../github/apiReader';
+import { provenanceScore, isAutoVerified, type OwnerProfile } from './provenance';
 import type { RegistryEntry } from '../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -24,6 +25,10 @@ export interface RawSignals {
   /** Combined weekly downloads across npm + PyPI, or null if unpublished/unknown. */
   downloadVelocity: number | null;
   downloadSource: string | null;
+  /** Computed 1–5 provenance from the repo owner's GitHub footprint. */
+  provenanceScore: number;
+  /** Whether owner credibility was confirmed via the API (schema auto_verified). */
+  autoVerified: boolean;
 }
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -41,17 +46,43 @@ export class AssayCollector {
     if (!parsed) throw new Error(`Unparseable repo URL: ${entry.repo}`);
     const { owner, repo } = parsed;
 
-    const [github, downloads] = await Promise.all([
+    const [github, downloads, provenance] = await Promise.all([
       this.collectGitHub(owner, repo),
       this.collectDownloads(entry, owner, repo),
+      this.collectProvenance(owner),
     ]);
 
-    return { ...github, ...downloads };
+    return { ...github, ...downloads, ...provenance };
+  }
+
+  // ── Provenance: owner account standing → 1–5 + auto_verified ───────────────
+
+  private async collectProvenance(
+    login: string,
+  ): Promise<Pick<RawSignals, 'provenanceScore' | 'autoVerified'>> {
+    const { data: owner } = await this.octokit.users.getByUsername({ username: login });
+    let isVerified = false;
+    if (owner.type === 'Organization') {
+      try {
+        const { data: org } = await this.octokit.orgs.get({ org: login });
+        isVerified = Boolean((org as { is_verified?: boolean }).is_verified);
+      } catch {
+        // org metadata not readable — leave unverified
+      }
+    }
+    const profile: OwnerProfile = {
+      type: owner.type === 'Organization' ? 'Organization' : 'User',
+      ageYears: (Date.now() - new Date(owner.created_at).getTime()) / (365.25 * 24 * 60 * 60 * 1000),
+      publicRepos: owner.public_repos ?? 0,
+      followers: owner.followers ?? 0,
+      isVerified,
+    };
+    return { provenanceScore: provenanceScore(profile), autoVerified: isAutoVerified(profile) };
   }
 
   // ── GitHub: stars, forks, recency, 30-day active contributors ─────────────
 
-  private async collectGitHub(owner: string, repo: string): Promise<Omit<RawSignals, 'downloadVelocity' | 'downloadSource'>> {
+  private async collectGitHub(owner: string, repo: string): Promise<Omit<RawSignals, 'downloadVelocity' | 'downloadSource' | 'provenanceScore' | 'autoVerified'>> {
     const { data: r } = await this.octokit.repos.get({ owner, repo });
     const stars = r.stargazers_count ?? 0;
     const forks = r.forks_count ?? 0;

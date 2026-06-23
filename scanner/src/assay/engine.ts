@@ -37,7 +37,12 @@ export interface EntryScore {
   issueQuality: number;
   /** True if issueQuality was recomputed by the LLM this run. */
   issueQualityRecomputed: boolean;
+  /** The 1–5 provenance rating used (computed from owner signals, or override). */
   provenance: number;
+  /** True if provenance came from assay.provenance_override, not the computed score. */
+  provenanceOverridden: boolean;
+  /** Computed author_provenance.auto_verified for this run. */
+  autoVerified: boolean;
 }
 
 export interface AssayRunResult {
@@ -152,14 +157,15 @@ export class AssayEngine {
       const r = raw.get(e.id)!;
       const a = e.assay as unknown as Record<string, number | null>;
 
-      // Provenance is always carried forward (human-set). Issue quality is
-      // recomputed when scoreIssues is on, else carried forward (override wins).
+      // Issue quality is recomputed when scoreIssues is on, else carried forward
+      // (override wins). Provenance is computed from owner signals every run,
+      // unless a maintainer pinned assay.provenance_override.
       const recomputed = issueRatings.get(e.id);
       const issueRating = recomputed
         ?? (a.issue_quality_override as number | null)
         ?? (a.issue_quality_score as number) ?? 0;
-      const provRating =
-        (a.provenance_score as number | null) ?? e.author_provenance?.provenance_score ?? 0;
+      const provOverride = a.provenance_override as number | null | undefined;
+      const provRating = provOverride ?? r.provenanceScore;
 
       const downloads = r.downloadVelocity != null
         ? downloadScore(r.downloadVelocity, medianVelByCat.get(e.category) ?? 0)
@@ -184,6 +190,8 @@ export class AssayEngine {
         issueQuality: issueRating,
         issueQualityRecomputed: recomputed != null,
         provenance: provRating,
+        provenanceOverridden: provOverride != null,
+        autoVerified: r.autoVerified,
       };
     });
 

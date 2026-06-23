@@ -9,6 +9,7 @@ import {
   compositeScore,
   WEIGHTS,
 } from './scorer';
+import { provenanceScore, isAutoVerified, type OwnerProfile } from './provenance';
 
 // Run with: npm test  (node --test, type-stripped)
 
@@ -55,6 +56,22 @@ test('five-point normalisation', () => {
   assert.equal(normalizeFivePoint(5), 100);
   assert.equal(normalizeFivePoint(4), 80);
   assert.equal(normalizeFivePoint(0), 0);
+});
+
+test('provenance: verified established org → 5, brand-new personal → 1', () => {
+  const org = (o: Partial<OwnerProfile>): OwnerProfile =>
+    ({ type: 'Organization', ageYears: 5, publicRepos: 100, followers: 0, isVerified: true, ...o });
+  assert.equal(provenanceScore(org({})), 5);
+  assert.equal(provenanceScore(org({ isVerified: false })), 4); // strong but unverified org
+  assert.equal(provenanceScore({ type: 'User', ageYears: 0.5, publicRepos: 2, followers: 3, isVerified: false }), 1);
+  assert.ok(provenanceScore({ type: 'User', ageYears: 8, publicRepos: 40, followers: 9000, isVerified: false }) >= 4);
+});
+
+test('auto_verified only for credible orgs', () => {
+  assert.equal(isAutoVerified({ type: 'Organization', ageYears: 5, publicRepos: 100, followers: 0, isVerified: true }), true);
+  assert.equal(isAutoVerified({ type: 'Organization', ageYears: 3, publicRepos: 30, followers: 0, isVerified: false }), true);
+  assert.equal(isAutoVerified({ type: 'User', ageYears: 10, publicRepos: 200, followers: 9000, isVerified: false }), false);
+  assert.equal(isAutoVerified({ type: 'Organization', ageYears: 0.5, publicRepos: 1, followers: 0, isVerified: false }), false);
 });
 
 test('composite respects weights (all-100 → 100, all-0 → 0)', () => {

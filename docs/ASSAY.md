@@ -46,7 +46,9 @@ Maintainers can override this score using `issue_quality_override` in the regist
 
 ### 6. Provenance (weight: 12.5%)
 
-Set by a maintainer on a 1–5 scale per the rubric in CONTRIBUTING.md. Normalized to 0–100. This is the only signal that cannot be automated — it requires human judgment about author credibility and real-world adoption evidence.
+A 1–5 score for author credibility, normalized to 0–100. **Computed** from the repo owner's GitHub footprint so the registry can scale past hand curation: organizations earn credibility from being verified (verified-domain badge), established, and prolific; personal accounts from a large following and long history (see `scanner/src/assay/provenance.ts` for the rubric).
+
+Because the API measures the *owner account* — not reputation — a major project under a small or unverified org (e.g. a Databricks-origin tool living under its own lean org) can score mid-range. A maintainer can pin a deliberate value with `assay.provenance_override`, which the engine always prefers over the computed score. The companion `author_provenance.auto_verified` flag is set true only when owner credibility is confirmed via the API (a verified or established org), replacing the previously hard-coded value.
 
 ## Composite score
 
@@ -92,7 +94,7 @@ What is automated vs. carried forward:
 | Download velocity | **Live** — npm + PyPI last-week downloads |
 | Last commit recency | **Live** — default-branch HEAD date |
 | Issue quality | **Live (opt-in)** — `assay --issues` samples the last ~50 closed issues (Search API, `type:issue`) and scores them with Claude Haiku against the four § 5 criteria. Without `--issues`, carried forward from the entry (override wins). Needs `ANTHROPIC_API_KEY`. |
-| Provenance | **Carried forward** — human-set, by design |
+| Provenance | **Live** — heuristic from the owner's GitHub footprint (§ 6). Pin a maintainer value with `assay.provenance_override`. Also sets `auto_verified`. |
 
 **Download verification.** Package names are guessed from the repo, so each
 candidate is only counted if its registry `repository` link points back to the

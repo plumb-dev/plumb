@@ -41,7 +41,15 @@ export function applyScores(yamlText: string, scores: EntryScore[], scoredAt: st
     if (score.issueQualityRecomputed) {
       setScalar(assay, 'issue_quality_score', round(score.issueQuality, 1));
     }
+    // Provenance is computed every run unless a maintainer pinned an override.
+    if (!score.provenanceOverridden) {
+      setScalar(assay, 'provenance_score', score.provenance);
+    }
     setScalar(assay, 'assay_score', score.assayScore);
+
+    // Honest auto_verified, replacing the hard-coded value.
+    const authorProvenance = item.get('author_provenance');
+    if (isMap(authorProvenance)) setScalar(authorProvenance, 'auto_verified', score.autoVerified);
 
     const meta = item.get('meta');
     if (isMap(meta)) setScalar(meta, 'last_auto_scored', scoredAt);
