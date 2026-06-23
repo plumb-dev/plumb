@@ -1,5 +1,6 @@
 import type { Category, RegistryEntry } from '../types';
 import { AssayCollector, type RawSignals } from './collector';
+import { IssueQualityScorer } from './issueQuality';
 import {
   forkToStarScore,
   contributorScore,
@@ -32,14 +33,18 @@ export interface EntryScore {
   assayScore: number;
   /** The entry's previous composite, for diffing. */
   previousScore: number;
-  /** Carried forward, not recomputed. */
+  /** The 1–5 issue-quality rating used (recomputed if scoreIssues, else carried forward). */
   issueQuality: number;
+  /** True if issueQuality was recomputed by the LLM this run. */
+  issueQualityRecomputed: boolean;
   provenance: number;
 }
 
 export interface AssayRunResult {
   scores: EntryScore[];
   errors: { id: string; error: string }[];
+  /** Issue-quality scoring failures — non-fatal; the entry keeps its prior rating. */
+  issueErrors: { id: string; error: string }[];
   scoredAt: string;
 }
 
@@ -49,6 +54,11 @@ export interface AssayEngineOptions {
   concurrency?: number;
   /** Called after each entry is collected, for progress UIs. */
   onProgress?: (done: number, total: number, id: string) => void;
+  /** Recompute issue quality via Claude (needs anthropicApiKey / ANTHROPIC_API_KEY). */
+  scoreIssues?: boolean;
+  anthropicApiKey?: string;
+  /** Override the issue-quality model (default claude-haiku-4-5). */
+  issueModel?: string;
 }
 
 const median = (xs: number[]): number => {
@@ -69,17 +79,27 @@ export class AssayEngine {
   private collector: AssayCollector;
   private concurrency: number;
   private onProgress?: AssayEngineOptions['onProgress'];
+  private issueScorer?: IssueQualityScorer;
 
   constructor(opts: AssayEngineOptions = {}) {
     this.collector = new AssayCollector(opts.githubToken);
     this.concurrency = opts.concurrency ?? 5;
     this.onProgress = opts.onProgress;
+    if (opts.scoreIssues) {
+      this.issueScorer = new IssueQualityScorer({
+        githubToken: opts.githubToken,
+        anthropicApiKey: opts.anthropicApiKey,
+        model: opts.issueModel,
+      });
+    }
   }
 
   async scoreAll(entries: RegistryEntry[]): Promise<AssayRunResult> {
-    // ── Pass 1: collect raw signals (bounded concurrency) ───────────────────
+    // ── Pass 1: collect raw signals + (optional) issue quality ──────────────
     const raw = new Map<string, RawSignals>();
+    const issueRatings = new Map<string, number>();
     const errors: { id: string; error: string }[] = [];
+    const issueErrors: { id: string; error: string }[] = [];
     let done = 0;
 
     const queue = [...entries];
@@ -89,6 +109,15 @@ export class AssayEngine {
         if (!entry) return;
         try {
           raw.set(entry.id, await this.collector.collect(entry));
+          // Issue quality is best-effort: a failure here keeps the prior rating.
+          if (this.issueScorer) {
+            try {
+              const r = await this.issueScorer.score(entry);
+              if (r) issueRatings.set(entry.id, r.rating);
+            } catch (err) {
+              issueErrors.push({ id: entry.id, error: err instanceof Error ? err.message : String(err) });
+            }
+          }
         } catch (err) {
           errors.push({ id: entry.id, error: err instanceof Error ? err.message : String(err) });
         } finally {
@@ -123,9 +152,12 @@ export class AssayEngine {
       const r = raw.get(e.id)!;
       const a = e.assay as unknown as Record<string, number | null>;
 
-      // Issue quality and provenance are carried forward (override wins).
-      const issueRating =
-        (a.issue_quality_override as number | null) ?? (a.issue_quality_score as number) ?? 0;
+      // Provenance is always carried forward (human-set). Issue quality is
+      // recomputed when scoreIssues is on, else carried forward (override wins).
+      const recomputed = issueRatings.get(e.id);
+      const issueRating = recomputed
+        ?? (a.issue_quality_override as number | null)
+        ?? (a.issue_quality_score as number) ?? 0;
       const provRating =
         (a.provenance_score as number | null) ?? e.author_provenance?.provenance_score ?? 0;
 
@@ -150,10 +182,11 @@ export class AssayEngine {
         assayScore: compositeScore(subScores),
         previousScore: (a.assay_score as number) ?? 0,
         issueQuality: issueRating,
+        issueQualityRecomputed: recomputed != null,
         provenance: provRating,
       };
     });
 
-    return { scores, errors, scoredAt: new Date().toISOString() };
+    return { scores, errors, issueErrors, scoredAt: new Date().toISOString() };
   }
 }

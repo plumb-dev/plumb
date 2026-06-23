@@ -97,9 +97,12 @@ program
   .option('--id <id>', 'Only score the entry with this id')
   .option('--write', 'Write recomputed scores back into the file (default: dry-run)', false)
   .option('-c, --concurrency <n>', 'Number of entries to collect in parallel', '5')
+  .option('--issues', 'Recompute issue quality via Claude (needs ANTHROPIC_API_KEY)', false)
+  .option('--issue-model <id>', 'Model for issue-quality scoring', 'claude-haiku-4-5')
   .action(async (options) => {
     const spinner = ora({ color: 'yellow' });
     const token = options.token ?? process.env.GITHUB_TOKEN;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
     try {
       const text = fs.readFileSync(options.file, 'utf-8');
@@ -116,10 +119,16 @@ program
           `     Scoring ${entries.length} entries needs ~${entries.length * 4} calls. ` +
           `Pass --token or set GITHUB_TOKEN.\n`));
       }
+      if (options.issues && !anthropicKey) {
+        throw new Error('--issues needs an Anthropic API key. Set ANTHROPIC_API_KEY.');
+      }
 
       const engine = new AssayEngine({
         githubToken: token,
         concurrency: parseInt(options.concurrency, 10) || 5,
+        scoreIssues: options.issues,
+        anthropicApiKey: anthropicKey,
+        issueModel: options.issueModel,
         onProgress: (done, total, id) => {
           spinner.text = chalk.dim(`scoring ${done}/${total} · ${id}`);
           if (!spinner.isSpinning) spinner.start();
@@ -181,10 +190,21 @@ function outputAssay(result: AssayRunResult, willWrite: boolean): void {
       `${s.raw.lastCommitDaysAgo}d`);
   }
 
+  const recomputed = result.scores.filter(s => s.issueQualityRecomputed).length;
+  if (recomputed > 0) {
+    console.log('');
+    console.log(dim(`  issue quality recomputed via Claude for ${recomputed}/${result.scores.length} entries`));
+  }
+
   if (result.errors.length) {
     console.log('');
     console.log(chalk.red(`  ${result.errors.length} entries could not be scored:`));
     for (const e of result.errors) console.log(dim(`    - ${e.id}: ${e.error}`));
+  }
+  if (result.issueErrors.length) {
+    console.log('');
+    console.log(chalk.yellow(`  ${result.issueErrors.length} issue-quality scorings failed (kept prior rating):`));
+    for (const e of result.issueErrors) console.log(dim(`    - ${e.id}: ${e.error}`));
   }
 }
 

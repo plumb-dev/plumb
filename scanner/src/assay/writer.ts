@@ -37,6 +37,10 @@ export function applyScores(yamlText: string, scores: EntryScore[], scoredAt: st
     setScalar(assay, 'download_velocity', score.raw.downloadVelocity,
       score.raw.downloadSource ? ` ${score.raw.downloadSource} (weekly)` : ' unpublished — category median');
     setScalar(assay, 'last_commit_days_ago', score.raw.lastCommitDaysAgo);
+    // Only overwrite issue_quality_score when it was actually recomputed (LLM run).
+    if (score.issueQualityRecomputed) {
+      setScalar(assay, 'issue_quality_score', round(score.issueQuality, 1));
+    }
     setScalar(assay, 'assay_score', score.assayScore);
 
     const meta = item.get('meta');

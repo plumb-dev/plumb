@@ -34,7 +34,13 @@ jobs:
       - name: Re-score registry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd scanner && npx ts-node src/cli.ts assay --write --token "$GITHUB_TOKEN"
+          # Optional: set this repo secret to also recompute issue quality via Claude.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd scanner
+          ISSUES=""
+          [ -n "$ANTHROPIC_API_KEY" ] && ISSUES="--issues"
+          npx ts-node src/cli.ts assay --write --token "$GITHUB_TOKEN" $ISSUES
 
       - name: Commit refreshed scores
         run: |

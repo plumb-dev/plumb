@@ -9,6 +9,8 @@ export { AssayEngine } from './engine';
 export type { EntryScore, AssayRunResult, AssayEngineOptions } from './engine';
 export { AssayCollector } from './collector';
 export type { RawSignals } from './collector';
+export { IssueQualityScorer } from './issueQuality';
+export type { IssueQualityResult, IssueQualityBreakdown } from './issueQuality';
 export { applyScores, writeScores } from './writer';
 export {
   WEIGHTS,

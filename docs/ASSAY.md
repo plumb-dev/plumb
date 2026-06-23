@@ -91,7 +91,7 @@ What is automated vs. carried forward:
 | Monthly active contributors | **Live** — distinct authors of commits in the last 30 days on the default branch |
 | Download velocity | **Live** — npm + PyPI last-week downloads |
 | Last commit recency | **Live** — default-branch HEAD date |
-| Issue quality | **Carried forward** from the entry — recomputing it needs an LLM pass and is not yet wired |
+| Issue quality | **Live (opt-in)** — `assay --issues` samples the last ~50 closed issues (Search API, `type:issue`) and scores them with Claude Haiku against the four § 5 criteria. Without `--issues`, carried forward from the entry (override wins). Needs `ANTHROPIC_API_KEY`. |
 | Provenance | **Carried forward** — human-set, by design |
 
 **Download verification.** Package names are guessed from the repo, so each
