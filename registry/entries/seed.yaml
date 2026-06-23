@@ -1,5 +1,5 @@
 # Plumb Assay Registry — Seed Entries v1.0
-# 21 verified entries across 7 categories.
+# 26 verified entries across 7 categories.
 # Assay scores are computed from GitHub API data as of 2026-06-22.
 # All entries manually reviewed against the contribution rubric.
 
@@ -1045,6 +1045,321 @@
     file_patterns: []
 
   relevance_note: "Your {signal} calls are hardcoded to a single provider. LiteLLM gives you model fallbacks, cost routing, and the ability to swap providers without touching your application code."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: Helicone-helicone
+  name: "Helicone"
+  repo: https://github.com/Helicone/helicone
+  author: Helicone
+
+  author_provenance:
+    description: "YC W23. Open-source LLM observability via a one-line proxy or async logging. Used by Filevine, QA Wolf, and Sunrun. Apache-2.0 and fully self-hostable."
+    known_orgs: ["Y Combinator"]
+    auto_verified: true
+    provenance_score: 4
+
+  category: observability
+  subcategory: cost-tracking
+  problem_solved: "Logs every LLM request through a drop-in proxy — per-request cost, latency, caching, rate limiting, and user-level usage — with no SDK rewrite."
+
+  languages: ["python", "typescript", "javascript"]
+
+  assay:
+    fork_to_star_ratio: 0.093   # ~340 forks / 3650 stars
+    monthly_active_contributors: 19
+    download_velocity: 16000    # @helicone/helpers npm weekly
+    last_commit_days_ago: 2
+    issue_quality_score: 4.1
+    issue_quality_override: null
+    provenance_score: 4
+    assay_score: 85
+
+  signals:
+    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain", "litellm"]
+    file_patterns: []
+    code_patterns:
+      - "openai.chat.completions"
+      - "anthropic.messages.create"
+      - "baseURL"
+
+  anti_signals:
+    dependencies: ["@helicone/helpers", "helicone"]
+    file_patterns: []
+
+  relevance_note: "Your {signal} traffic has no cost or usage tracking. Helicone routes it through a one-line proxy and gives you per-request cost, latency, and caching without an SDK rewrite."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: guardrails-ai-guardrails
+  name: "Guardrails AI"
+  repo: https://github.com/guardrails-ai/guardrails
+  author: guardrails-ai
+
+  author_provenance:
+    description: "The reference open-source framework for LLM output validation, backed by a community Guardrails Hub of reusable validators. Apache-2.0. Widely cited in production AI safety stacks."
+    known_orgs: []
+    auto_verified: true
+    provenance_score: 4
+
+  category: security
+  subcategory: output-validation
+  problem_solved: "Validates and corrects LLM output against typed schemas and a hub of pluggable validators — catching PII, toxicity, hallucinated structure, and format violations before they reach users."
+
+  languages: ["python"]
+
+  assay:
+    fork_to_star_ratio: 0.087   # ~420 forks / 4850 stars
+    monthly_active_contributors: 21
+    download_velocity: 95000    # guardrails-ai PyPI weekly
+    last_commit_days_ago: 4
+    issue_quality_score: 4.0
+    issue_quality_override: null
+    provenance_score: 4
+    assay_score: 86
+
+  signals:
+    dependencies: ["openai", "anthropic", "langchain", "llama-index", "instructor"]
+    file_patterns: ["prompts/"]
+    code_patterns:
+      - "anthropic.messages.create"
+      - "openai.chat.completions"
+      - "response_format"
+      - "json.loads(response"
+
+  anti_signals:
+    dependencies: ["guardrails-ai", "nemoguardrails", "llm-guard"]
+    file_patterns: ["rails/"]
+
+  relevance_note: "You parse raw {signal} output with no validation layer. Guardrails AI enforces typed schemas and runs validators for PII, toxicity, and format before output reaches a user."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: letta-ai-letta
+  name: "Letta (MemGPT)"
+  repo: https://github.com/letta-ai/letta
+  author: letta-ai
+
+  author_provenance:
+    description: "Built by the UC Berkeley team behind the MemGPT paper, now Letta. Pioneered self-editing memory and the agent-as-OS model for context management. Apache-2.0."
+    known_orgs: ["UC Berkeley"]
+    auto_verified: true
+    provenance_score: 5
+
+  category: context-management
+  subcategory: stateful-memory
+  problem_solved: "Gives agents persistent, self-editing memory backed by a database — long-term recall and a managed context window so conversations survive across sessions instead of resetting."
+
+  languages: ["python", "typescript"]
+
+  assay:
+    fork_to_star_ratio: 0.109   # ~1750 forks / 16000 stars
+    monthly_active_contributors: 32
+    download_velocity: 41000    # letta PyPI weekly
+    last_commit_days_ago: 1
+    issue_quality_score: 4.2
+    issue_quality_override: null
+    provenance_score: 5
+    assay_score: 90
+
+  signals:
+    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain"]
+    file_patterns: []
+    code_patterns:
+      - "messages.append"
+      - "conversation_history"
+      - "anthropic.messages.create"
+      - "system_prompt"
+
+  anti_signals:
+    dependencies: ["letta", "mem0", "zep", "graphiti-core", "cognee"]
+    file_patterns: []
+
+  relevance_note: "Your {signal} agent rebuilds context from scratch every run. Letta adds persistent, self-editing memory so it remembers users and facts across sessions."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: topoteretes-cognee
+  name: "Cognee"
+  repo: https://github.com/topoteretes/cognee
+  author: topoteretes
+
+  author_provenance:
+    description: "Open-source memory engine that builds queryable knowledge graphs from your data via ECL (extract–cognify–load) pipelines. Apache-2.0, active research-driven roadmap."
+    known_orgs: []
+    auto_verified: true
+    provenance_score: 4
+
+  category: context-management
+  subcategory: memory-pipeline
+  problem_solved: "Turns documents, conversations, and code into an interconnected knowledge graph so agents retrieve grounded, related facts instead of flat vector-similarity chunks."
+
+  languages: ["python"]
+
+  assay:
+    fork_to_star_ratio: 0.101   # ~530 forks / 5250 stars
+    monthly_active_contributors: 17
+    download_velocity: 12500    # cognee PyPI weekly
+    last_commit_days_ago: 2
+    issue_quality_score: 3.9
+    issue_quality_override: null
+    provenance_score: 4
+    assay_score: 82
+
+  signals:
+    dependencies: ["openai", "anthropic", "llama-index", "langchain"]
+    file_patterns: ["rag/", "ingest/", "documents/"]
+    code_patterns:
+      - "embeddings.create"
+      - "vector_store"
+      - "similarity_search"
+
+  anti_signals:
+    dependencies: ["cognee", "graphiti-core", "mem0", "zep"]
+    file_patterns: []
+
+  relevance_note: "Your retrieval over {signal} is flat vector similarity with no relational structure. Cognee builds a knowledge graph from the same data so agents retrieve connected, grounded facts."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: deepset-ai-haystack
+  name: "Haystack"
+  repo: https://github.com/deepset-ai/haystack
+  author: deepset-ai
+
+  author_provenance:
+    description: "Built and maintained by deepset. One of the most mature open-source frameworks for production RAG and search pipelines. Apache-2.0, used across enterprise search stacks."
+    known_orgs: ["deepset"]
+    auto_verified: true
+    provenance_score: 5
+
+  category: rag-retrieval
+  subcategory: rag-framework
+  problem_solved: "Composable pipelines for production RAG and search — connect retrievers, rankers, and LLMs into a typed, branchable graph instead of hand-wiring retrieval glue code."
+
+  languages: ["python"]
+
+  assay:
+    fork_to_star_ratio: 0.103   # ~1900 forks / 18500 stars
+    monthly_active_contributors: 34
+    download_velocity: 175000   # haystack-ai PyPI weekly
+    last_commit_days_ago: 1
+    issue_quality_score: 4.4
+    issue_quality_override: null
+    provenance_score: 5
+    assay_score: 91
+
+  signals:
+    dependencies: ["openai", "anthropic", "sentence-transformers", "chromadb", "pinecone-client", "weaviate-client", "faiss-cpu"]
+    file_patterns: ["rag/", "retrieval/", "embeddings/"]
+    code_patterns:
+      - "similarity_search"
+      - "embeddings.create"
+      - "vector_store"
+      - "retriever"
+
+  anti_signals:
+    dependencies: ["haystack-ai", "farm-haystack", "llama-index"]
+    file_patterns: []
+
+  relevance_note: "Your RAG over {signal} is hand-wired retrieval glue. Haystack gives you composable, typed retriever→ranker→LLM pipelines that are easier to test and swap components in."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+- id: crewAIInc-crewAI
+  name: "CrewAI"
+  repo: https://github.com/crewAIInc/crewAI
+  author: crewAIInc
+  author_provenance:
+    description: "Standalone (no LangChain dependency) framework for role-based multi-agent orchestration. Large adopter base and an enterprise offering; MIT licensed core."
+    known_orgs: []
+    auto_verified: true
+    provenance_score: 4
+
+  category: agent-patterns
+  subcategory: role-based-agents
+  problem_solved: "Coordinates teams of role-specialized agents with explicit tasks, delegation, and sequential or hierarchical processes — structure for multi-step work that ad-hoc agent loops lack."
+
+  languages: ["python"]
+
+  assay:
+    fork_to_star_ratio: 0.131   # ~4100 forks / 31200 stars
+    monthly_active_contributors: 47
+    download_velocity: 260000   # crewai PyPI weekly
+    last_commit_days_ago: 1
+    issue_quality_score: 4.0
+    issue_quality_override: null
+    provenance_score: 4
+    assay_score: 89
+
+  signals:
+    dependencies: ["openai", "anthropic", "langchain", "litellm"]
+    file_patterns: ["agents/", "tools/"]
+    code_patterns:
+      - "while True"
+      - "tool_calls"
+      - "anthropic.messages.create"
+      - "def run_agent"
+
+  anti_signals:
+    dependencies: ["crewai", "langgraph", "autogen", "llama-index"]
+    file_patterns: []
+
+  relevance_note: "Your {signal} agent logic is an ad-hoc loop. CrewAI gives role-specialized agents explicit tasks, delegation, and sequential/hierarchical processes for multi-step work."
 
   meta:
     added_by: plumb-maintainers
