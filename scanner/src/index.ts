@@ -22,3 +22,6 @@ export type {
   Category,
 } from './types';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
+
+// Assay scoring engine — re-scores registry entries from live GitHub + package data.
+export * from './assay';

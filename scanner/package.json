@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
-    "scan": "ts-node src/cli.ts"
+    "scan": "ts-node src/cli.ts",
+    "assay": "ts-node src/cli.ts assay",
+    "test": "ts-node src/assay/scorer.test.ts"
   },
   "dependencies": {
     "@octokit/rest": "^20.1.1",

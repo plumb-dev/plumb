@@ -1,0 +1,49 @@
+name: Assay re-score
+
+# Recomputes the four objective Assay signals (fork ratio, active contributors,
+# download velocity, commit recency) for every registry entry from live data,
+# then commits the refreshed scores. Issue-quality and provenance are preserved.
+#
+# Cadence target is ~72h (docs/ASSAY.md). Cron has no "every 72h", so this runs
+# at 06:00 UTC on every 3rd day of the month. Can also be triggered manually.
+
+on:
+  schedule:
+    - cron: '0 6 */3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rescore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build scanner
+        run: npm run build --workspace scanner
+
+      - name: Re-score registry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cd scanner && npx ts-node src/cli.ts assay --write --token "$GITHUB_TOKEN"
+
+      - name: Commit refreshed scores
+        run: |
+          git config user.name "plumb-assay-bot"
+          git config user.email "bot@plumb.dev"
+          git add registry/entries/*.yaml
+          if git diff --cached --quiet; then
+            echo "No score changes."
+          else
+            git commit -m "assay: scheduled re-score $(date -u +%Y-%m-%d)"
+            git push
+          fi

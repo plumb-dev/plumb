@@ -77,6 +77,30 @@ Rounded to the nearest integer. Range: 0–100.
 
 Assay runs every 72 hours against all public registry entries via the GitHub API and package registry APIs. Enterprise private registry entries are scored on the same cadence within the customer's own infrastructure.
 
+## Implementation (v0.1)
+
+The engine lives in `scanner/src/assay/` and runs via `cd scanner && npm run assay`
+(dry-run) or `... assay --write` (persist). The scheduled run is wired in
+`.github/workflows/assay.yml`.
+
+What is automated vs. carried forward:
+
+| Signal | v0.1 behaviour |
+|--------|----------------|
+| Fork-to-star ratio | **Live** — GitHub repo API |
+| Monthly active contributors | **Live** — distinct authors of commits in the last 30 days on the default branch |
+| Download velocity | **Live** — npm + PyPI last-week downloads |
+| Last commit recency | **Live** — default-branch HEAD date |
+| Issue quality | **Carried forward** from the entry — recomputing it needs an LLM pass and is not yet wired |
+| Provenance | **Carried forward** — human-set, by design |
+
+**Download verification.** Package names are guessed from the repo, so each
+candidate is only counted if its registry `repository` link points back to the
+entry's GitHub repo. This rejects same-named-but-unrelated packages. A package
+whose registry metadata does not link to the repo is treated as unresolved, and
+the entry receives the category-median download score (§3) rather than zero. An
+entry may pin its package names with `assay.npm` / `assay.pypi` to skip guessing.
+
 ## Override policy
 
 Any auto-computed score except provenance can be overridden by a maintainer using the corresponding `_override` field. Overrides are logged in the registry git history and visible to contributors. An override that materially changes a score triggers a mandatory re-review within 30 days.

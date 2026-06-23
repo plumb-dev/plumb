@@ -4,8 +4,11 @@ import chalk from 'chalk';
 import ora from 'ora';
 import * as path from 'path';
 import * as fs from 'fs';
+import { parse } from 'yaml';
 import { PlumbScanner } from './scanner';
-import type { PlumbReport, CategoryResult } from './types';
+import { AssayEngine, writeScores } from './assay';
+import type { PlumbReport, CategoryResult, RegistryEntry } from './types';
+import type { AssayRunResult } from './assay';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Plumb CLI
@@ -77,11 +80,125 @@ program
     }
   });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// assay — re-score registry entries from live data
+//
+//   plumb assay                       # dry-run against the seed registry
+//   plumb assay --write --token ghp_x # recompute and write scores back
+//   plumb assay --id langfuse-langfuse
+// ─────────────────────────────────────────────────────────────────────────────
+
+program
+  .command('assay')
+  .description('Re-score registry entries from live GitHub + package-registry data.')
+  .option('-f, --file <path>', 'Registry YAML file to score',
+    path.join(__dirname, '..', '..', 'registry', 'entries', 'seed.yaml'))
+  .option('-t, --token <token>', 'GitHub PAT (raises rate limits; recommended for a full run)')
+  .option('--id <id>', 'Only score the entry with this id')
+  .option('--write', 'Write recomputed scores back into the file (default: dry-run)', false)
+  .option('-c, --concurrency <n>', 'Number of entries to collect in parallel', '5')
+  .action(async (options) => {
+    const spinner = ora({ color: 'yellow' });
+    const token = options.token ?? process.env.GITHUB_TOKEN;
+
+    try {
+      const text = fs.readFileSync(options.file, 'utf-8');
+      const parsed = parse(text);
+      let entries: RegistryEntry[] = Array.isArray(parsed) ? parsed : [parsed];
+      if (options.id) entries = entries.filter(e => e.id === options.id);
+
+      if (entries.length === 0) {
+        throw new Error(options.id ? `No entry with id "${options.id}"` : 'No entries found in file');
+      }
+      if (!token) {
+        console.error(chalk.yellow(
+          `\n  ⚠  No GitHub token — unauthenticated API is capped at 60 req/hr.\n` +
+          `     Scoring ${entries.length} entries needs ~${entries.length * 4} calls. ` +
+          `Pass --token or set GITHUB_TOKEN.\n`));
+      }
+
+      const engine = new AssayEngine({
+        githubToken: token,
+        concurrency: parseInt(options.concurrency, 10) || 5,
+        onProgress: (done, total, id) => {
+          spinner.text = chalk.dim(`scoring ${done}/${total} · ${id}`);
+          if (!spinner.isSpinning) spinner.start();
+        },
+      });
+
+      const result = await engine.scoreAll(entries);
+      spinner.stop();
+
+      outputAssay(result, options.write);
+
+      if (options.write) {
+        const n = writeScores(options.file, result.scores, result.scoredAt);
+        console.log(chalk.green(`\n  ✓ Wrote ${n} updated scores to ${path.relative(process.cwd(), options.file)}\n`));
+      } else {
+        console.log(chalk.dim('\n  Dry run. Re-run with --write to persist these scores.\n'));
+      }
+    } catch (err: unknown) {
+      spinner.stop();
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(chalk.red('\n  Error: ') + message);
+      if (message.includes('rate limit')) {
+        console.error(chalk.dim('\n  Tip: pass --token with a GitHub PAT to raise the limit to 5,000 req/hr'));
+      }
+      process.exit(1);
+    }
+  });
+
 program.parse();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Output formatters
 // ─────────────────────────────────────────────────────────────────────────────
+
+function outputAssay(result: AssayRunResult, willWrite: boolean): void {
+  const gold = chalk.hex('#C8B560');
+  const dim = chalk.dim;
+
+  console.log('');
+  console.log(gold.bold('  PLUMB') + dim(` · Assay re-score · ${result.scores.length} entries · `) +
+    (willWrite ? chalk.green('write') : chalk.cyan('dry-run')));
+  console.log('');
+  console.log(dim(
+    '  ' + 'entry'.padEnd(28) + 'score'.padEnd(13) + 'forks/stars'.padEnd(15) +
+    'cntrb'.padEnd(7) + 'weekly dl'.padEnd(12) + 'commit'));
+  console.log(dim('  ' + '─'.repeat(82)));
+
+  for (const s of [...result.scores].sort((a, b) => b.assayScore - a.assayScore)) {
+    const delta = s.assayScore - s.previousScore;
+    const arrow = delta > 0 ? chalk.green(`▲${delta}`) : delta < 0 ? chalk.red(`▼${-delta}`) : dim('  =');
+    const scoreCol = `${s.previousScore}→${gold.bold(String(s.assayScore))} ${arrow}`;
+    const dl = s.raw.downloadVelocity == null ? dim('—') : human(s.raw.downloadVelocity);
+    console.log(
+      '  ' + s.id.slice(0, 27).padEnd(28) +
+      padVisible(scoreCol, 13) +
+      `${s.raw.forks}/${s.raw.stars}`.padEnd(15) +
+      String(s.raw.monthlyActiveContributors).padEnd(7) +
+      padVisible(dl, 12) +
+      `${s.raw.lastCommitDaysAgo}d`);
+  }
+
+  if (result.errors.length) {
+    console.log('');
+    console.log(chalk.red(`  ${result.errors.length} entries could not be scored:`));
+    for (const e of result.errors) console.log(dim(`    - ${e.id}: ${e.error}`));
+  }
+}
+
+function human(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return Math.round(n / 1_000) + 'k';
+  return String(n);
+}
+
+/** padEnd that ignores ANSI colour codes when measuring width. */
+function padVisible(s: string, width: number): string {
+  const visible = s.replace(/\x1b\[[0-9;]*m/g, "").length;
+  return s + ' '.repeat(Math.max(0, width - visible));
+}
 
 function outputTerminal(report: PlumbReport): void {
   const { fingerprint: fp, categories } = report;

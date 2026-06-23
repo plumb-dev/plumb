@@ -954,8 +954,8 @@
 
 - id: instructor-hq-instructor
   name: "Instructor"
-  repo: https://github.com/instructor-hq/instructor
-  author: instructor-hq
+  repo: https://github.com/567-labs/instructor
+  author: 567-labs
 
   author_provenance:
     description: "Built by Jason Liu (ex-Stitch Fix ML). The standard for structured outputs from LLMs using Pydantic. Used by hundreds of production AI teams. 10,000+ stars."
