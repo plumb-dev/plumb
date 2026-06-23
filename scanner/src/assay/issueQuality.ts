@@ -80,17 +80,8 @@ export class IssueQualityScorer {
     const issues = await this.fetchClosedIssues(parsed.owner, parsed.repo);
     if (issues.length === 0) return null;
 
-    const response = await this.anthropic.messages.create({
-      model: this.model,
-      max_tokens: 256,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: renderIssues(issues) }],
-      output_config: { format: { type: 'json_schema', schema: SCHEMA } },
-    } as Anthropic.MessageCreateParamsNonStreaming);
-
-    const text = response.content.find(b => b.type === 'text');
-    if (!text || text.type !== 'text') throw new Error('No text block in issue-quality response');
-    const b = JSON.parse(text.text) as IssueQualityBreakdown;
+    const content = renderIssues(issues);
+    const b = await this.judge(content);
 
     const breakdown: IssueQualityBreakdown = {
       reproduction_steps: clamp5(b.reproduction_steps),
@@ -105,15 +96,47 @@ export class IssueQualityScorer {
     return { rating, sampled: issues.length, breakdown };
   }
 
+  // Call the model and parse its JSON. Retries on a rare empty/truncated body
+  // ("Unexpected end of JSON input") or transient API error.
+  private async judge(content: string, attempts = 3): Promise<IssueQualityBreakdown> {
+    let lastErr: unknown;
+    for (let i = 0; i < attempts; i++) {
+      try {
+        const response = await this.anthropic.messages.create({
+          model: this.model,
+          max_tokens: 256,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: 'user', content }],
+          output_config: { format: { type: 'json_schema', schema: SCHEMA } },
+        } as Anthropic.MessageCreateParamsNonStreaming);
+        const text = response.content.find(b => b.type === 'text');
+        if (!text || text.type !== 'text' || !text.text.trim()) {
+          throw new Error('Empty issue-quality response');
+        }
+        return JSON.parse(text.text) as IssueQualityBreakdown;
+      } catch (err) {
+        lastErr = err;
+        if (i < attempts - 1) await new Promise(r => setTimeout(r, 400 * 2 ** i));
+      }
+    }
+    throw lastErr;
+  }
+
   // ── Fetch the most recent closed issues (excluding PRs) ─────────────────────
 
   private async fetchClosedIssues(owner: string, repo: string): Promise<SampledIssue[]> {
     // Search with type:issue so PRs are excluded server-side — listForRepo mixes
     // issues and PRs, which starves the sample on PR-heavy repos.
-    const { data } = await this.octokit.search.issuesAndPullRequests({
-      q: `repo:${owner}/${repo} type:issue state:closed`,
-      sort: 'updated', order: 'desc', per_page: MAX_ISSUES,
-    });
+    //
+    // The Search API has a low secondary-rate-limit (~30/min); under a bulk run
+    // it surfaces as a transient 403/429 (and sometimes a 422), so back off and
+    // retry rather than dropping the entry's issue rating.
+    const data = await searchWithRetry(() =>
+      this.octokit.search.issuesAndPullRequests({
+        q: `repo:${owner}/${repo} type:issue state:closed`,
+        sort: 'updated', order: 'desc', per_page: MAX_ISSUES,
+      }),
+    );
     return data.items.map(i => ({
       number: i.number,
       title: i.title,
@@ -130,6 +153,43 @@ interface SampledIssue {
   body: string;
   comments: number;
   stateReason: string | null;
+}
+
+type SearchResponse = Awaited<ReturnType<Octokit['search']['issuesAndPullRequests']>>;
+
+/**
+ * Run a Search API call, backing off on transient secondary-rate-limit errors
+ * (403/429, occasionally 422) and 5xx. Honours a `retry-after` header when
+ * present, else exponential backoff. Re-throws if all attempts are exhausted —
+ * the engine treats that as a non-fatal issue-quality miss.
+ */
+async function searchWithRetry(
+  call: () => Promise<SearchResponse>,
+  attempts = 4,
+): Promise<SearchResponse['data']> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return (await call()).data;
+    } catch (err) {
+      lastErr = err;
+      const status = (err as { status?: number }).status;
+      // Retry secondary-rate-limit (403/429), the occasional 422, 5xx, and
+      // statusless network/JSON-parse glitches ("Unexpected end of JSON input").
+      const transient = status == null || status === 403 || status === 429 ||
+        status === 422 || status >= 500;
+      if (!transient || i === attempts - 1) throw err;
+      const retryAfter = Number(
+        (err as { response?: { headers?: Record<string, string> } })
+          .response?.headers?.['retry-after'],
+      );
+      const waitMs = retryAfter > 0
+        ? retryAfter * 1000
+        : 1000 * 2 ** i + Math.random() * 500;
+      await new Promise(r => setTimeout(r, waitMs));
+    }
+  }
+  throw lastErr;
 }
 
 function renderIssues(issues: SampledIssue[]): string {
