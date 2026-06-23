@@ -1,0 +1,23 @@
+{
+  "name": "@plumb/mcp-server",
+  "version": "0.1.0",
+  "description": "Plumb MCP server — exposes codebase scanning to any MCP-compatible AI agent",
+  "main": "dist/index.js",
+  "bin": {
+    "plumb-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@plumb/scanner": "file:../scanner"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

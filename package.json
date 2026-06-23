@@ -1,0 +1,5 @@
+{
+  "name": "plumb",
+  "private": true,
+  "workspaces": ["scanner", "vscode-extension", "mcp-server"]
+}

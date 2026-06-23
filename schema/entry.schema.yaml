@@ -1,0 +1,139 @@
+# Plumb Registry — Entry Schema v1.0
+# Every entry in the Assay registry follows this structure.
+# Fields marked (auto) are computed by the Assay engine and should not be hand-edited.
+# Fields marked (moderated) are set by maintainers and can override auto values.
+
+# ─────────────────────────────────────────
+# IDENTITY
+# ─────────────────────────────────────────
+
+id: string
+  # Unique slug. Format: author-reponame (kebab-case)
+  # Example: brainlid-langchain-memory
+
+name: string
+  # Human-readable name of the repo or tool
+  # Example: "LangChain Memory"
+
+repo: string
+  # Full GitHub URL
+  # Example: https://github.com/brainlid/langchain
+
+author: string
+  # GitHub username or org name
+
+author_provenance:
+  description: string
+    # One sentence on why this author is credible
+    # Example: "Maintainer of LangChain. Used in production at Replit and Vercel."
+  known_orgs: [string]
+    # Optional. List of credible orgs the author is affiliated with.
+    # Example: ["Anthropic", "Vercel", "Hugging Face"]
+  auto_verified: boolean
+    # (auto) True if author org affiliation was confirmed via GitHub API
+  provenance_score: integer
+    # (moderated) 1–5. Maintainer-set score. Overrides auto if present.
+
+# ─────────────────────────────────────────
+# CLASSIFICATION
+# ─────────────────────────────────────────
+
+category: string
+  # One of:
+  #   context-management
+  #   prompt-engineering
+  #   rag-retrieval
+  #   testing-evals
+  #   security
+  #   observability
+  #   agent-patterns
+
+subcategory: string
+  # More specific classification within the category.
+  # Example: within observability — "cost-tracking" | "tracing" | "logging"
+
+problem_solved: string
+  # One sentence, plain English. What does this repo fix?
+  # Example: "Manages long-term memory across LLM sessions without blowing the context window."
+
+languages: [string]
+  # Relevant languages and frameworks this repo targets.
+  # Example: ["python", "typescript", "langchain", "openai"]
+
+# ─────────────────────────────────────────
+# ASSAY SCORE  (computed — do not hand-edit)
+# ─────────────────────────────────────────
+
+assay:
+  fork_to_star_ratio: float
+    # (auto) Forks divided by stars. Healthy range: 0.10–0.25
+  monthly_active_contributors: integer
+    # (auto) Unique contributors with merged activity in the last 30 days
+  download_velocity: integer
+    # (auto) Weekly downloads from npm, PyPI, or crates.io where applicable. Null if not published.
+  last_commit_days_ago: integer
+    # (auto) Days since last commit to the default branch
+  issue_quality_score: float
+    # (auto) Claude-scored 1–5 based on last 50 closed issues.
+    # Looks for: reproduction steps, stack traces, version specificity, resolution depth.
+  issue_quality_override: integer
+    # (moderated) Optional maintainer override of issue_quality_score. 1–5.
+  provenance_score: integer
+    # (moderated) 1–5. Set by a maintainer. Cannot be auto-computed.
+  assay_score: integer
+    # (auto) Weighted composite 0–100. Displayed to developers in the report card.
+    # Weights: fork_to_star_ratio 20%, monthly_active_contributors 25%,
+    #          download_velocity 20%, last_commit_days_ago 10%,
+    #          issue_quality 12.5%, provenance 12.5%
+
+# ─────────────────────────────────────────
+# SCANNER CONTEXT
+# ─────────────────────────────────────────
+
+signals:
+  dependencies: [string]
+    # Package names in package.json / requirements.txt / Cargo.toml that trigger relevance.
+    # Example: ["openai", "anthropic", "langchain", "llama-index"]
+  file_patterns: [string]
+    # File names or glob patterns that suggest relevance.
+    # Example: ["*.prompt", "prompts/", "evals/", "AGENTS.md"]
+  code_patterns: [string]
+    # Strings or regex patterns found in source code that trigger relevance.
+    # Example: ["ChatCompletion.create", "anthropic.messages.create", "RAGPipeline"]
+
+anti_signals:
+  dependencies: [string]
+    # If these are already present, this repo is likely redundant.
+    # Example: ["mem0", "zep"] — already handling memory, no need to recommend brainlid-langchain-memory
+  file_patterns: [string]
+
+relevance_note: string
+  # One sentence template Claude uses in the report card to explain why this applies.
+  # Use {signal} as a placeholder for the matched dependency or pattern.
+  # Example: "Your use of {signal} without a memory layer means conversations reset on every session."
+
+# ─────────────────────────────────────────
+# REGISTRY METADATA
+# ─────────────────────────────────────────
+
+meta:
+  added_by: string
+    # GitHub username of the contributor who submitted this entry
+  added_date: date
+    # ISO 8601. Example: 2026-06-22
+  verified: boolean
+    # True if a maintainer has reviewed and approved this entry
+  verified_by: string
+    # GitHub username of the maintainer who verified
+  last_reviewed: date
+    # ISO 8601. Date of last maintainer review.
+  last_auto_scored: datetime
+    # (auto) Timestamp of last Assay engine scoring run
+  registry_version: string
+    # Semver of this entry's schema version. Example: "1.0.0"
+  visibility: string
+    # "public" | "org"
+    # Public entries are in the community registry.
+    # Org entries are in a private enterprise registry and include org_id.
+  org_id: string
+    # Only present when visibility is "org". Enterprise registry identifier.

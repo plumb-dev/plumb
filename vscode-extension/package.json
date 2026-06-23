@@ -1,0 +1,108 @@
+{
+  "name": "plumb",
+  "displayName": "Plumb",
+  "description": "Scan your codebase against the Assay registry of AI engineering best practices",
+  "version": "0.1.0",
+  "publisher": "plumb-dev",
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Linters"
+  ],
+  "keywords": [
+    "ai",
+    "llm",
+    "best practices",
+    "codebase",
+    "scanner"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "plumb.scan",
+        "title": "Plumb: Scan Repository",
+        "icon": "$(search)"
+      },
+      {
+        "command": "plumb.openPanel",
+        "title": "Plumb: Open Report Panel"
+      },
+      {
+        "command": "plumb.setToken",
+        "title": "Plumb: Set GitHub Token"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "plumb",
+          "title": "Plumb",
+          "icon": "assets/plumb-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "plumb": [
+        {
+          "type": "webview",
+          "id": "plumb.reportView",
+          "name": "Report"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "plumb.scan",
+          "when": "view == plumb.reportView",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Plumb",
+      "properties": {
+        "plumb.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub personal access token. Raises scan rate limit from 60 to 5,000 requests/hr. Store securely via 'Plumb: Set GitHub Token' command."
+        },
+        "plumb.apiOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "Skip the clone pass. Faster but misses code-level pattern matching."
+        },
+        "plumb.autoScanOnOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically scan when a workspace is opened."
+        },
+        "plumb.orgId": {
+          "type": "string",
+          "default": "",
+          "description": "Enterprise org ID for private registry access."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@plumb/scanner": "file:../scanner"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.125.0",
+    "typescript": "^5.9.3"
+  }
+}

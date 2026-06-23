@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plumb — Report Card</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0F1117;
+    --surface:   #1A1D26;
+    --border:    #2A2D38;
+    --text:      #F0EFE9;
+    --muted:     #7A7D8A;
+    --gold:      #C8B560;
+    --gold-dim:  #6B5F2A;
+    --green:     #4A9E6B;
+    --red:       #C0392B;
+    --amber:     #D4834A;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'Inter', sans-serif;
+  }
+
+  html { font-size: 14px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  .wordmark span {
+    color: var(--gold);
+  }
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .header-meta .engine-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .header-meta .engine-tag strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── REPO IDENTITY ── */
+  .repo-banner {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .repo-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: start;
+  }
+  .repo-path {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.03em;
+  }
+  .repo-path a { color: var(--gold); text-decoration: none; }
+  .repo-path a:hover { text-decoration: underline; }
+  .repo-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .repo-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    max-width: 560px;
+  }
+  .repo-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .scan-meta {
+    text-align: right;
+  }
+  .scan-meta .scan-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .scan-meta .scan-date {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+
+  /* ── OVERALL SCORE BAR ── */
+  .score-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-bar-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .score-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    position: relative;
+    overflow: visible;
+  }
+  .score-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .score-categories {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .score-cat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .score-cat .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .dot-found { background: var(--gold); }
+  .dot-gap   { background: var(--red); }
+  .dot-ok    { background: var(--green); }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 2rem;
+  }
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .cat-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .cat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.65rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .cat-item:hover { background: var(--surface); }
+  .cat-item.active {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+  .cat-item-name {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .cat-item.active .cat-item-name { color: var(--text); }
+  .cat-item-count {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    background: var(--border);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+  }
+  .cat-item.has-gaps .cat-item-count { background: rgba(192,57,43,0.2); color: var(--red); }
+  .cat-item.all-good .cat-item-count { background: rgba(74,158,107,0.15); color: var(--green); }
+
+  /* ── REPORT CONTENT ── */
+  .report-section {
+    display: none;
+  }
+  .report-section.active { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-subtitle {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── RECOMMENDATION CARD ── */
+  .rec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1.25rem;
+    transition: border-color 0.15s;
+  }
+  .rec-card:hover { border-color: var(--gold-dim); }
+
+  /* Plumb bob score */
+  .plumb-bob {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .bob-line {
+    width: 1px;
+    height: 12px;
+    background: var(--border);
+  }
+  .bob-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .bob-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--gold);
+    opacity: 0.18;
+    transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bob-fill.high { opacity: 0.25; }
+  .bob-score {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold);
+    position: relative;
+    z-index: 1;
+  }
+  .bob-point {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid var(--border);
+  }
+
+  .rec-body {}
+  .rec-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .rec-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+  }
+  .rec-repo {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--gold);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rec-repo:hover { text-decoration: underline; }
+  .rec-problem {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .rec-relevance {
+    background: rgba(200, 181, 96, 0.07);
+    border-left: 2px solid var(--gold-dim);
+    padding: 0.5rem 0.65rem;
+    font-size: 0.8rem;
+    color: var(--text);
+    border-radius: 0 3px 3px 0;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+  }
+  .rec-relevance strong {
+    font-style: normal;
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+  .rec-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .signal-pill {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+  }
+  .signal-match {
+    background: rgba(200, 181, 96, 0.12);
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+  }
+  .signal-assay {
+    background: rgba(74, 158, 107, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(74, 158, 107, 0.3);
+  }
+  .signal-warn {
+    background: rgba(212, 131, 74, 0.1);
+    color: var(--amber);
+    border: 1px solid rgba(212, 131, 74, 0.3);
+  }
+
+  /* gap card */
+  .gap-card {
+    border-left: 3px solid var(--red);
+    border-color: var(--border);
+    border-left-color: var(--red);
+  }
+  .gap-badge {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--red);
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.3);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  /* ── COVERAGE CARD ── */
+  .coverage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .coverage-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .coverage-text {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .coverage-text strong { color: var(--text); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .footer-left strong { color: var(--gold); font-weight: 500; }
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .repo-banner-inner { grid-template-columns: 1fr; }
+    .scan-meta { text-align: left; }
+    .score-categories { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="wordmark">PLU<span>MB</span></div>
+    <div class="header-meta">
+      <span class="engine-tag">powered by <strong>Assay</strong> v1.0</span>
+    </div>
+  </div>
+</header>
+
+<!-- REPO IDENTITY -->
+<div class="repo-banner">
+  <div class="repo-banner-inner">
+    <div>
+      <div class="repo-path">
+        <a href="#">github.com/acme-corp/customer-support-agent</a>
+      </div>
+      <div class="repo-title">customer-support-agent</div>
+      <div class="repo-desc">LLM-powered support ticket routing and response generation. Uses OpenAI GPT-4o with LangChain orchestration and a Pinecone vector store.</div>
+      <div class="repo-tags">
+        <span class="tag">python</span>
+        <span class="tag">openai</span>
+        <span class="tag">langchain</span>
+        <span class="tag">pinecone</span>
+        <span class="tag">fastapi</span>
+        <span class="tag">redis</span>
+      </div>
+    </div>
+    <div class="scan-meta">
+      <div class="scan-label">Scanned</div>
+      <div class="scan-date">2026-06-22 09:41 UTC</div>
+      <div class="scan-label" style="margin-top:0.75rem;">Commit</div>
+      <div class="scan-date">a3f82c1</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCORE BAR -->
+<div class="score-bar">
+  <div class="score-bar-label">Coverage</div>
+  <div class="score-track">
+    <div class="score-fill" id="mainFill" style="width:0%"></div>
+  </div>
+  <div class="score-categories">
+    <div class="score-cat"><div class="dot dot-gap"></div>3 gaps</div>
+    <div class="score-cat"><div class="dot dot-found"></div>4 recommendations</div>
+    <div class="score-cat"><div class="dot dot-ok"></div>2 covered</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Categories</div>
+    <ul class="cat-list">
+      <li class="cat-item has-gaps active" data-section="observability" onclick="switchSection('observability', this)">
+        <span class="cat-item-name">Observability</span>
+        <span class="cat-item-count">gap</span>
+      </li>
+      <li class="cat-item has-gaps" data-section="testing" onclick="switchSection('testing', this)">
+        <span class="cat-item-name">Testing & Evals</span>
+        <span class="cat-item-count">gap</span>
+      </li>
+      <li class="cat-item has-gaps" data-section="security" onclick="switchSection('security', this)">
+        <span class="cat-item-name">Security</span>
+        <span class="cat-item-count">gap</span>
+      </li>
+      <li class="cat-item" data-section="rag" onclick="switchSection('rag', this)">
+        <span class="cat-item-name">RAG & Retrieval</span>
+        <span class="cat-item-count">2</span>
+      </li>
+      <li class="cat-item" data-section="context" onclick="switchSection('context', this)">
+        <span class="cat-item-name">Context Management</span>
+        <span class="cat-item-count">1</span>
+      </li>
+      <li class="cat-item all-good" data-section="agents" onclick="switchSection('agents', this)">
+        <span class="cat-item-name">Agent Patterns</span>
+        <span class="cat-item-count">ok</span>
+      </li>
+      <li class="cat-item all-good" data-section="prompts" onclick="switchSection('prompts', this)">
+        <span class="cat-item-name">Prompt Engineering</span>
+        <span class="cat-item-count">ok</span>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- REPORT SECTIONS -->
+  <div class="report-content">
+
+    <!-- OBSERVABILITY -->
+    <div class="report-section active" id="section-observability">
+      <div class="section-header">
+        <div class="section-title">Observability</div>
+        <div class="section-subtitle">0 of 2 patterns covered</div>
+      </div>
+
+      <div class="rec-card gap-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill high" style="height:93%"></div>
+            <div class="bob-score">93</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">OpenLLMetry</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="gap-badge">missing</span>
+              <a class="rec-repo" href="https://github.com/traceloop/openllmetry" target="_blank">traceloop/openllmetry ↗</a>
+            </div>
+          </div>
+          <div class="rec-problem">Adds OpenTelemetry-compatible tracing to any LLM call — latency, token usage, and cost per request in your existing stack.</div>
+          <div class="rec-relevance">Your <strong>openai.chat.completions</strong> calls have no tracing layer. Without it you have no visibility into per-request cost or latency distribution across your support pipeline.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: openai</span>
+            <span class="signal-pill signal-match">matched: langchain</span>
+            <span class="signal-pill signal-assay">assay: 93</span>
+            <span class="signal-pill signal-assay">89k weekly downloads</span>
+            <span class="signal-pill signal-assay">31 active contributors</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-card gap-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill" style="height:81%"></div>
+            <div class="bob-score">81</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">LangFuse</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="gap-badge">missing</span>
+              <a class="rec-repo" href="https://github.com/langfuse/langfuse" target="_blank">langfuse/langfuse ↗</a>
+            </div>
+          </div>
+          <div class="rec-problem">Open-source LLM observability with a UI for traces, scores, and production debugging. Native LangChain integration.</div>
+          <div class="rec-relevance">Your <strong>langchain</strong> orchestration has no logging layer. LangFuse's LangChain callback handler adds full trace capture in under 10 lines.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: langchain</span>
+            <span class="signal-pill signal-assay">assay: 81</span>
+            <span class="signal-pill signal-assay">62k weekly downloads</span>
+            <span class="signal-pill signal-warn">last commit: 18d ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTING & EVALS -->
+    <div class="report-section" id="section-testing">
+      <div class="section-header">
+        <div class="section-title">Testing & Evals</div>
+        <div class="section-subtitle">0 of 1 patterns covered</div>
+      </div>
+
+      <div class="rec-card gap-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill high" style="height:88%"></div>
+            <div class="bob-score">88</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">PromptFoo</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="gap-badge">missing</span>
+              <a class="rec-repo" href="https://github.com/promptfoo/promptfoo" target="_blank">promptfoo/promptfoo ↗</a>
+            </div>
+          </div>
+          <div class="rec-problem">A test runner for LLM outputs — define expected behaviors, run assertions, catch regressions before they reach production.</div>
+          <div class="rec-relevance">Your <strong>response_generator.py</strong> has no eval harness. A change to your system prompt is indistinguishable from a regression until a customer reports it.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: openai</span>
+            <span class="signal-pill signal-match">file: prompts/</span>
+            <span class="signal-pill signal-assay">assay: 88</span>
+            <span class="signal-pill signal-assay">44 active contributors</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="report-section" id="section-security">
+      <div class="section-header">
+        <div class="section-title">Security</div>
+        <div class="section-subtitle">0 of 1 patterns covered</div>
+      </div>
+
+      <div class="rec-card gap-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill" style="height:79%"></div>
+            <div class="bob-score">79</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">Rebuff</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="gap-badge">missing</span>
+              <a class="rec-repo" href="https://github.com/protectai/rebuff" target="_blank">protectai/rebuff ↗</a>
+            </div>
+          </div>
+          <div class="rec-problem">Prompt injection detection API — validates user input before it reaches your LLM to prevent data leakage and jailbreaks.</div>
+          <div class="rec-relevance">Your <strong>ticket_handler.py</strong> passes raw customer input directly to the model. In a customer support context, this is a meaningful prompt injection surface.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: openai</span>
+            <span class="signal-pill signal-match">code: messages.create</span>
+            <span class="signal-pill signal-assay">assay: 79</span>
+            <span class="signal-pill signal-warn">moderate adoption</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAG -->
+    <div class="report-section" id="section-rag">
+      <div class="section-header">
+        <div class="section-title">RAG & Retrieval</div>
+        <div class="section-subtitle">2 recommendations · pinecone detected</div>
+      </div>
+
+      <div class="rec-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill high" style="height:91%"></div>
+            <div class="bob-score">91</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">Ragas</div>
+            <a class="rec-repo" href="https://github.com/explodinggradients/ragas" target="_blank">explodinggradients/ragas ↗</a>
+          </div>
+          <div class="rec-problem">Evaluation framework for RAG pipelines — measures retrieval quality, answer faithfulness, and context precision against your ground truth.</div>
+          <div class="rec-relevance">Your <strong>pinecone</strong> retrieval has no quality measurement. You have no signal on whether retrieved chunks are actually improving responses.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: pinecone</span>
+            <span class="signal-pill signal-match">matched: langchain</span>
+            <span class="signal-pill signal-assay">assay: 91</span>
+            <span class="signal-pill signal-assay">58k weekly downloads</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill" style="height:76%"></div>
+            <div class="bob-score">76</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">LlamaIndex Reranker</div>
+            <a class="rec-repo" href="https://github.com/run-llama/llama_index" target="_blank">run-llama/llama_index ↗</a>
+          </div>
+          <div class="rec-problem">Cross-encoder reranking for retrieved chunks — improves answer quality by re-scoring results before they enter the context window.</div>
+          <div class="rec-relevance">Your <strong>pinecone</strong> top-k retrieval feeds directly into the prompt with no reranking step. Reranking typically improves answer faithfulness by 15–30% on support queries.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: pinecone</span>
+            <span class="signal-pill signal-assay">assay: 76</span>
+            <span class="signal-pill signal-assay">high provenance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEXT -->
+    <div class="report-section" id="section-context">
+      <div class="section-header">
+        <div class="section-title">Context Management</div>
+        <div class="section-subtitle">1 recommendation</div>
+      </div>
+
+      <div class="rec-card">
+        <div class="plumb-bob">
+          <div class="bob-line"></div>
+          <div class="bob-circle">
+            <div class="bob-fill" style="height:84%"></div>
+            <div class="bob-score">84</div>
+          </div>
+          <div class="bob-point"></div>
+        </div>
+        <div class="rec-body">
+          <div class="rec-header">
+            <div class="rec-name">Mem0</div>
+            <a class="rec-repo" href="https://github.com/mem0ai/mem0" target="_blank">mem0ai/mem0 ↗</a>
+          </div>
+          <div class="rec-problem">Persistent memory layer for LLM applications — stores and retrieves user-specific context across sessions without filling the context window.</div>
+          <div class="rec-relevance">Your <strong>redis</strong> session storage resets on each ticket. Customers who return with a related issue get no continuity — the model starts from scratch every time.</div>
+          <div class="rec-signals">
+            <span class="signal-pill signal-match">matched: redis</span>
+            <span class="signal-pill signal-match">matched: openai</span>
+            <span class="signal-pill signal-assay">assay: 84</span>
+            <span class="signal-pill signal-assay">71k weekly downloads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENTS -->
+    <div class="report-section" id="section-agents">
+      <div class="section-header">
+        <div class="section-title">Agent Patterns</div>
+        <div class="section-subtitle">Covered</div>
+      </div>
+      <div class="coverage-card">
+        <div class="coverage-icon" style="background:var(--green)"></div>
+        <div class="coverage-text"><strong>LangChain AgentExecutor</strong> detected. Your tool-use and planning patterns are handled. No additional recommendation at this time.</div>
+      </div>
+    </div>
+
+    <!-- PROMPTS -->
+    <div class="report-section" id="section-prompts">
+      <div class="section-header">
+        <div class="section-title">Prompt Engineering</div>
+        <div class="section-subtitle">Covered</div>
+      </div>
+      <div class="coverage-card">
+        <div class="coverage-icon" style="background:var(--green)"></div>
+        <div class="coverage-text"><strong>Structured output patterns</strong> detected in <strong>response_schema.py</strong>. Your prompts use typed outputs with Pydantic validation. No additional recommendation at this time.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">Scored by <strong>Assay</strong> v1.0 · registry commit <strong>a1b2c3d</strong> · plumb.dev</div>
+    <div class="footer-right">Open source · MIT license</div>
+  </div>
+</footer>
+
+<script>
+  function switchSection(id, el) {
+    document.querySelectorAll('.report-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  // Animate score bar on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('mainFill').style.width = '57%';
+    }, 300);
+  });
+</script>
+
+</body>
+</html>

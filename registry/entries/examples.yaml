@@ -1,0 +1,162 @@
+# Plumb Registry — Example Entries
+# These are illustrative seed entries showing the schema in practice.
+# Assay scores marked (auto) would be computed at runtime by the Assay engine.
+
+# ─────────────────────────────────────────
+# ENTRY 1: Context Management
+# ─────────────────────────────────────────
+
+- id: mattpocock-skills
+  name: "Skills for Real Engineers"
+  repo: https://github.com/mattpocock/skills
+  author: mattpocock
+
+  author_provenance:
+    description: "TypeScript educator with 74,500+ stars on this repo. Ex-Vercel. Active daily user of Claude Code in production."
+    known_orgs: ["Vercel"]
+    auto_verified: true
+    provenance_score: 5
+
+  category: agent-patterns
+  subcategory: workflow-enforcement
+  problem_solved: "Encodes engineering discipline into Claude Code so the agent follows your team's process rather than taking shortcuts."
+
+  languages: ["typescript", "javascript", "markdown"]
+
+  assay:
+    fork_to_star_ratio: 0.086        # (auto)
+    monthly_active_contributors: 12  # (auto)
+    download_velocity: null          # (auto) not a published package
+    last_commit_days_ago: 5          # (auto)
+    issue_quality_score: 4.2         # (auto)
+    issue_quality_override: null
+    provenance_score: 5              # (moderated)
+    assay_score: 87                  # (auto)
+
+  signals:
+    dependencies: ["@anthropic-ai/claude-code", "claude-code"]
+    file_patterns: [".claude/", "CLAUDE.md", "AGENTS.md"]
+    code_patterns: []
+
+  anti_signals:
+    dependencies: []
+    file_patterns: [".claude/commands/grill-me.md"]  # already using Pocock's skills
+
+  relevance_note: "Your {signal} setup has no structured workflow commands. Pocock's skills encode grilling sessions, TDD loops, and PRD generation directly into your agent."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+# ─────────────────────────────────────────
+# ENTRY 2: Testing & Evals
+# ─────────────────────────────────────────
+
+- id: brainlid-langchain
+  name: "LangChain for Elixir"
+  repo: https://github.com/brainlid/langchain
+  author: brainlid
+
+  author_provenance:
+    description: "Active maintainer with consistent release cadence. Production usage documented across multiple Elixir community projects."
+    known_orgs: []
+    auto_verified: false
+    provenance_score: 3
+
+  category: testing-evals
+  subcategory: llm-output-validation
+  problem_solved: "Provides structured chain execution with typed outputs, making LLM responses testable and regression-safe."
+
+  languages: ["elixir"]
+
+  assay:
+    fork_to_star_ratio: 0.18         # (auto)
+    monthly_active_contributors: 8   # (auto)
+    download_velocity: 14200         # (auto) hex.pm weekly downloads
+    last_commit_days_ago: 11         # (auto)
+    issue_quality_score: 3.8         # (auto)
+    issue_quality_override: null
+    provenance_score: 3              # (moderated)
+    assay_score: 74                  # (auto)
+
+  signals:
+    dependencies: ["langchain", "ex_openai", "instructor_ex"]
+    file_patterns: ["lib/chains/", "lib/llm/"]
+    code_patterns: ["LLMChain.new", "ChatOpenAI.new"]
+
+  anti_signals:
+    dependencies: ["ex_llm"]
+    file_patterns: []
+
+  relevance_note: "Your {signal} usage has no output validation layer. LangChain for Elixir gives you typed chain responses you can actually write tests against."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
+
+# ─────────────────────────────────────────
+# ENTRY 3: Observability
+# ─────────────────────────────────────────
+
+- id: traceloop-openllmetry
+  name: "OpenLLMetry"
+  repo: https://github.com/traceloop/openllmetry
+  author: traceloop
+
+  author_provenance:
+    description: "Traceloop is a YC-backed observability company. OpenLLMetry is the OpenTelemetry standard for LLM tracing, adopted by Datadog and Honeycomb."
+    known_orgs: ["Y Combinator", "Datadog"]
+    auto_verified: true
+    provenance_score: 5
+
+  category: observability
+  subcategory: tracing
+  problem_solved: "Adds OpenTelemetry-compatible tracing to any LLM call so you can see latency, token usage, and cost per request in your existing observability stack."
+
+  languages: ["python", "typescript", "javascript"]
+
+  assay:
+    fork_to_star_ratio: 0.14         # (auto)
+    monthly_active_contributors: 31  # (auto)
+    download_velocity: 89400         # (auto) npm + PyPI combined weekly
+    last_commit_days_ago: 3          # (auto)
+    issue_quality_score: 4.5         # (auto)
+    issue_quality_override: null
+    provenance_score: 5              # (moderated)
+    assay_score: 93                  # (auto)
+
+  signals:
+    dependencies: ["openai", "anthropic", "langchain", "llama-index", "cohere"]
+    file_patterns: ["src/llm/", "lib/ai/", "services/llm/"]
+    code_patterns: ["openai.chat.completions", "anthropic.messages.create", "client.chat"]
+
+  anti_signals:
+    dependencies: ["@traceloop/node-server-sdk", "traceloop-sdk"]
+    file_patterns: []
+
+  relevance_note: "Your {signal} calls have no tracing. Without OpenLLMetry you have no visibility into latency, token cost, or failure rates across your LLM layer."
+
+  meta:
+    added_by: plumb-maintainers
+    added_date: 2026-06-22
+    verified: true
+    verified_by: plumb-maintainers
+    last_reviewed: 2026-06-22
+    last_auto_scored: 2026-06-22T00:00:00Z
+    registry_version: "1.0.0"
+    visibility: public
+    org_id: null
