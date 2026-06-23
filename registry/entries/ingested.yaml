@@ -1,0 +1,62 @@
+- id: arize-ai-phoenix
+  name: Arize Phoenix
+  repo: https://github.com/Arize-ai/phoenix
+  author: Arize-ai
+  author_provenance:
+    description: ""
+    known_orgs: []
+    provenance_score: 0
+    auto_verified: true
+  category: observability
+  subcategory: AI observability and evaluation platform
+  problem_solved: Provides comprehensive observability, tracing, and evaluation
+    tools for LLM applications to monitor performance, debug issues, and assess
+    quality.
+  languages:
+    - python
+    - javascript
+    - typescript
+    - go
+  assay:
+    fork_to_star_ratio: 0.092
+    monthly_active_contributors: 23
+    download_velocity: null
+    last_commit_days_ago: 0
+    issue_quality_score: 2.3
+    provenance_score: 4
+    assay_score: 65
+  signals:
+    dependencies:
+      - langchain
+      - anthropic
+      - openai
+      - llamaindex
+      - langgraph
+    file_patterns:
+      - phoenix.evals
+      - openinference
+      - otel
+      - tracing
+    code_patterns:
+      - from phoenix
+      - import phoenix
+      - instrument()
+      - get_client()
+      - log_evaluations()
+  anti_signals:
+    dependencies:
+      - arize-phoenix
+      - arize-phoenix-evals
+    file_patterns:
+      - node_modules/arize-phoenix
+    code_patterns: []
+  relevance_note: If your project uses {signal}, Phoenix provides built-in
+    instrumentation and observability to trace LLM calls, evaluate outputs, and
+    monitor production performance.
+  meta:
+    added_by: assay-ingest
+    added_date: 2026-06-23
+    verified: false
+    visibility: public
+    org_id: null
+    registry_version: 1.0.0

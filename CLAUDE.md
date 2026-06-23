@@ -14,15 +14,19 @@ scanner/                  @plumb/scanner — core library + CLI. Everything depe
   src/readers/registryLoader.ts  Loads + validates registry YAML.
   src/github/apiReader.ts        Reads a repo via GitHub API (needs GITHUB_TOKEN).
   src/github/cloneReader.ts      Reads a repo by shallow-cloning it locally.
-  src/cli.ts              `scan <repo-url>` CLI entrypoint.
-  src/index.ts            Public API: PlumbScanner, types, CATEGORIES, CATEGORY_LABELS.
+  src/assay/              Assay scoring engine — scorer (pure math), collector (live
+                          GitHub + npm/PyPI), provenance, issueQuality (Claude),
+                          engine (orchestration), writer (YAML), ingest (repo → entry).
+  src/cli.ts              CLI: `scan`, `assay` (re-score), `ingest` (generate+admit entries).
+  src/index.ts            Public API: PlumbScanner, AssayEngine, ingestRepos, types.
 vscode-extension/         VS Code sidebar panel. Imports @plumb/scanner.
   src/extension.ts        activate() + command registration.
   src/PlumbPanel.ts       Webview controller.
   src/webview/template.ts Panel HTML/JS. No localStorage / sessionStorage here.
 mcp-server/               MCP server over stdio. Tools: plumb_scan, plumb_registry.
   src/index.ts            Server setup + tool handlers.
-registry/entries/         Community data. seed.yaml (verified entries), examples.yaml (templates).
+registry/entries/         Community data. seed.yaml (verified), examples.yaml (templates),
+                          ingested.yaml + ingested.<orgId>.yaml (auto-ingested, verified:false).
 schema/entry.schema.yaml  Canonical registry schema. Every entry conforms to it exactly.
 docs/                     ASSAY.md (scoring method) · CONTRIBUTING.md · plumb-report.html (UI prototype).
 ```
@@ -32,6 +36,9 @@ docs/                     ASSAY.md (scoring method) · CONTRIBUTING.md · plumb-
 - `npm install` (root) — installs all workspaces (hoisted).
 - `cd <pkg> && npm run build` — compiles that package with `tsc`.
 - `cd scanner && npx ts-node src/cli.ts scan https://github.com/owner/repo` — run a scan.
+- `cd scanner && npm run assay -- --write` — re-score the registry from live data.
+- `cd scanner && npx ts-node src/cli.ts ingest owner/repo [--org-id <id>] --write` — generate
+  and admit a full entry from a bare repo URL (needs ANTHROPIC_API_KEY).
 
 ## Assay scores
 

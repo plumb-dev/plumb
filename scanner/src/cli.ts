@@ -4,11 +4,11 @@ import chalk from 'chalk';
 import ora from 'ora';
 import * as path from 'path';
 import * as fs from 'fs';
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 import { PlumbScanner } from './scanner';
-import { AssayEngine, writeScores } from './assay';
+import { AssayEngine, writeScores, ingestRepos } from './assay';
 import type { PlumbReport, CategoryResult, RegistryEntry } from './types';
-import type { AssayRunResult } from './assay';
+import type { AssayRunResult, IngestResult } from './assay';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Plumb CLI
@@ -157,11 +157,94 @@ program
     }
   });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ingest — turn bare repo URLs into complete, scored registry entries
+//
+//   plumb ingest https://github.com/owner/repo                  # dry-run
+//   plumb ingest owner/repo --write                             # admit to public registry
+//   plumb ingest owner/repo --org-id acme_co --write            # private enterprise entry
+//   plumb ingest a/b c/d --threshold 70 --issues --write
+// ─────────────────────────────────────────────────────────────────────────────
+
+program
+  .command('ingest <targets...>')
+  .description('Generate + score full registry entries from repo URLs; admit those above the threshold.')
+  .option('-t, --token <token>', 'GitHub PAT (recommended)')
+  .option('--threshold <n>', 'Minimum assay_score to admit', '60')
+  .option('--org-id <id>', 'Mint private enterprise entries (visibility: org) under this org id')
+  .option('--write', 'Append admitted entries to the registry file (default: dry-run)', false)
+  .option('-o, --output <file>', 'Registry file to append to')
+  .action(async (targets: string[], options) => {
+    const spinner = ora({ color: 'yellow' });
+    const token = options.token ?? process.env.GITHUB_TOKEN;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+    try {
+      if (!anthropicKey) throw new Error('ingest needs an Anthropic API key. Set ANTHROPIC_API_KEY.');
+      const orgId = options.orgId as string | undefined;
+
+      spinner.text = chalk.dim(`ingesting ${targets.length} repos…`);
+      spinner.start();
+      const results = await ingestRepos(targets, {
+        githubToken: token,
+        anthropicApiKey: anthropicKey,
+        threshold: parseInt(options.threshold, 10) || 60,
+        visibility: orgId ? 'org' : 'public',
+        orgId,
+        scoreIssues: true, // the key is already required for generation; score all six
+      });
+      spinner.stop();
+
+      outputIngest(results, orgId);
+
+      const admitted = results.filter(r => r.admitted && r.entry).map(r => r.entry!);
+      if (options.write && admitted.length > 0) {
+        const outFile = options.output ?? path.join(
+          __dirname, '..', '..', 'registry', 'entries',
+          orgId ? `ingested.${orgId}.yaml` : 'ingested.yaml',
+        );
+        const existing: RegistryEntry[] = fs.existsSync(outFile)
+          ? (parse(fs.readFileSync(outFile, 'utf-8')) ?? [])
+          : [];
+        const ids = new Set(existing.map(e => e.id));
+        const fresh = admitted.filter(e => !ids.has(e.id));
+        fs.writeFileSync(outFile, stringify([...existing, ...fresh]), 'utf-8');
+        console.log(chalk.green(`\n  ✓ Wrote ${fresh.length} new entries to ${path.relative(process.cwd(), outFile)}` +
+          (admitted.length - fresh.length ? chalk.dim(` (${admitted.length - fresh.length} already present)`) : '') + '\n'));
+      } else if (admitted.length > 0) {
+        console.log(chalk.dim(`\n  Dry run. Re-run with --write to add ${admitted.length} admitted entr${admitted.length === 1 ? 'y' : 'ies'}.\n`));
+      } else {
+        console.log(chalk.dim('\n  Nothing cleared the threshold.\n'));
+      }
+    } catch (err: unknown) {
+      spinner.stop();
+      console.error(chalk.red('\n  Error: ') + (err instanceof Error ? err.message : String(err)));
+      process.exit(1);
+    }
+  });
+
 program.parse();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Output formatters
 // ─────────────────────────────────────────────────────────────────────────────
+
+function outputIngest(results: IngestResult[], orgId?: string): void {
+  const gold = chalk.hex('#C8B560');
+  const dim = chalk.dim;
+  console.log('');
+  console.log(gold.bold('  PLUMB') + dim(` · ingest · ${results.length} repos · `) +
+    (orgId ? chalk.magenta(`enterprise (${orgId})`) : chalk.cyan('public')));
+  console.log('');
+  for (const r of results) {
+    const slug = r.url.replace('https://github.com/', '');
+    if (r.error) { console.log('  ' + chalk.red('✗ ') + slug + dim(` — ${r.error}`)); continue; }
+    const mark = r.admitted ? chalk.green('✓ ') : chalk.yellow('· ');
+    console.log('  ' + mark + chalk.bold(r.entry!.name) + dim(` (${slug})`) +
+      dim(' · assay ') + gold.bold(String(r.score)) +
+      dim(` · ${r.entry!.category}${r.admitted ? '' : ' — below threshold'}`));
+  }
+}
 
 function outputAssay(result: AssayRunResult, willWrite: boolean): void {
   const gold = chalk.hex('#C8B560');

@@ -11,6 +11,10 @@ export { AssayCollector } from './collector';
 export type { RawSignals } from './collector';
 export { IssueQualityScorer } from './issueQuality';
 export type { IssueQualityResult, IssueQualityBreakdown } from './issueQuality';
+export { ingestRepos, EntryGenerator } from './ingest';
+export type { IngestOptions, IngestResult } from './ingest';
+export { provenanceScore, isAutoVerified } from './provenance';
+export type { OwnerProfile } from './provenance';
 export { applyScores, writeScores } from './writer';
 export {
   WEIGHTS,
