@@ -22,12 +22,16 @@ export const WEIGHTS = {
 const clamp = (n: number, lo = 0, hi = 100): number => Math.min(hi, Math.max(lo, n));
 
 // ── 1. Fork-to-star ratio (20%) ──────────────────────────────────────────────
-// Sigmoid centred at 0.15 (→ 50). Healthy range 0.10–0.25; <0.05 is a flag.
-//   k = 20 gives: 0.05→~12, 0.10→~27, 0.15→50, 0.25→~88
+// Sigmoid centred at FORK_RATIO_CENTER (→ 50). The centre was recalibrated from
+// the spec's original 0.15 to 0.10 after the first live run: real AI/LLM repos
+// cluster at 0.06–0.18 (mlflow 0.22 is a high outlier), so a 0.15 centre scored
+// the whole category as mediocre. See docs/ASSAY.md § 1.
+//   k = 20 gives: 0.05→~31, 0.10→50, 0.15→~73, 0.22→~91
+export const FORK_RATIO_CENTER = 0.10;
 export function forkToStarScore(ratio: number): number {
   if (!isFinite(ratio) || ratio < 0) return 0;
   const k = 20;
-  return clamp(100 / (1 + Math.exp(-k * (ratio - 0.15))));
+  return clamp(100 / (1 + Math.exp(-k * (ratio - FORK_RATIO_CENTER))));
 }
 
 // ── 2. Monthly active contributors (25%) ─────────────────────────────────────

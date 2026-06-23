@@ -1,7 +1,8 @@
 # Plumb Assay Registry — Seed Entries v1.0
 # 26 verified entries across 7 categories.
-# Assay scores are computed from GitHub API data as of 2026-06-22.
-# All entries manually reviewed against the contribution rubric.
+# Assay scores are computed by the Assay engine from live GitHub + package-registry
+# data (scanner/src/assay). Last full re-score: 2026-06-23. See meta.last_auto_scored
+# per entry. Issue-quality and provenance are maintainer-set; all others are auto.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # OBSERVABILITY
@@ -13,29 +14,45 @@
   author: traceloop
 
   author_provenance:
-    description: "Built by Traceloop, a YC-backed observability company. OpenLLMetry's semantic conventions for LLM were adopted by the OpenTelemetry project itself. Integrations shipped by Datadog and Honeycomb."
-    known_orgs: ["Y Combinator", "Datadog"]
+    description: "Built by Traceloop, a YC-backed observability company.
+      OpenLLMetry's semantic conventions for LLM were adopted by the
+      OpenTelemetry project itself. Integrations shipped by Datadog and
+      Honeycomb."
+    known_orgs: [ "Y Combinator", "Datadog" ]
     auto_verified: true
     provenance_score: 5
 
   category: observability
   subcategory: tracing
-  problem_solved: "Adds OpenTelemetry-compatible tracing to any LLM call — latency, token usage, and cost per request routed to any existing observability backend."
+  problem_solved: "Adds OpenTelemetry-compatible tracing to any LLM call —
+    latency, token usage, and cost per request routed to any existing
+    observability backend."
 
-  languages: ["python", "typescript", "javascript", "go", "ruby"]
+  languages: [ "python", "typescript", "javascript", "go", "ruby" ]
 
   assay:
-    fork_to_star_ratio: 0.134   # 947 forks / 7100 stars
-    monthly_active_contributors: 28
-    download_velocity: 94000    # combined npm + PyPI weekly
-    last_commit_days_ago: 3
+    fork_to_star_ratio: 0.139 # 1006 forks / 7227 stars
+    monthly_active_contributors: 3
+    download_velocity: 726435 # pypi:traceloop-sdk (weekly)
+    last_commit_days_ago: 1
     issue_quality_score: 4.3
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 93
+    assay_score: 63
+    pypi: traceloop-sdk
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain", "llama-index", "cohere", "groq", "mistralai"]
+    dependencies:
+      [
+        "openai",
+        "anthropic",
+        "@anthropic-ai/sdk",
+        "langchain",
+        "llama-index",
+        "cohere",
+        "groq",
+        "mistralai"
+      ]
     file_patterns: []
     code_patterns:
       - "openai.chat.completions"
@@ -43,10 +60,17 @@
       - "client.chat.completions.create"
 
   anti_signals:
-    dependencies: ["@traceloop/node-server-sdk", "traceloop-sdk", "opentelemetry-instrumentation-openai"]
+    dependencies:
+      [
+        "@traceloop/node-server-sdk",
+        "traceloop-sdk",
+        "opentelemetry-instrumentation-openai"
+      ]
     file_patterns: []
 
-  relevance_note: "Your {signal} calls have no tracing layer. Without OpenLLMetry you have no per-request visibility into latency, token cost, or failure rates across your LLM layer."
+  relevance_note: "Your {signal} calls have no tracing layer. Without OpenLLMetry
+    you have no per-request visibility into latency, token cost, or failure
+    rates across your LLM layer."
 
   meta:
     added_by: plumb-maintainers
@@ -54,7 +78,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -65,39 +89,45 @@
   author: langfuse
 
   author_provenance:
-    description: "YC W23. Acquired by ClickHouse in early 2026. MIT licensed. 29,500 stars, 3,000 forks. The de-facto open-source LLM engineering platform for self-hosting teams."
-    known_orgs: ["Y Combinator", "ClickHouse"]
+    description: "YC W23. Acquired by ClickHouse in early 2026. MIT licensed. 29,500
+      stars, 3,000 forks. The de-facto open-source LLM engineering platform for
+      self-hosting teams."
+    known_orgs: [ "Y Combinator", "ClickHouse" ]
     auto_verified: true
     provenance_score: 5
 
   category: observability
   subcategory: llm-engineering-platform
-  problem_solved: "Full LLM engineering platform: trace every call, manage and version prompts, run evals, and monitor cost and quality — all self-hostable in minutes via Docker."
+  problem_solved: "Full LLM engineering platform: trace every call, manage and
+    version prompts, run evals, and monitor cost and quality — all self-hostable
+    in minutes via Docker."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.104   # 3072 forks / 29532 stars
-    monthly_active_contributors: 41
-    download_velocity: 480000   # langfuse PyPI weekly (22M/month)
-    last_commit_days_ago: 2
+    fork_to_star_ratio: 0.104 # 3076 forks / 29563 stars
+    monthly_active_contributors: 26
+    download_velocity: 1626312 # npm:langfuse (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.5
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 91
+    assay_score: 76
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "llama-index", "litellm"]
-    file_patterns: ["prompts/", ".env"]
+    dependencies: [ "openai", "anthropic", "langchain", "llama-index", "litellm" ]
+    file_patterns: [ "prompts/", ".env" ]
     code_patterns:
       - "openai.chat.completions"
       - "anthropic.messages.create"
 
   anti_signals:
-    dependencies: ["langfuse", "langfuse-python"]
-    file_patterns: ["langfuse.config.ts"]
+    dependencies: [ "langfuse", "langfuse-python" ]
+    file_patterns: [ "langfuse.config.ts" ]
 
-  relevance_note: "Your {signal} setup has no engineering platform layer. Langfuse adds full tracing, prompt versioning, and eval scoring without changing your model calls."
+  relevance_note: "Your {signal} setup has no engineering platform layer. Langfuse
+    adds full tracing, prompt versioning, and eval scoring without changing your
+    model calls."
 
   meta:
     added_by: plumb-maintainers
@@ -105,7 +135,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -116,40 +146,55 @@
   author: mlflow
 
   author_provenance:
-    description: "Originally developed at Databricks. 30M+ monthly downloads. The most widely adopted open-source AI engineering platform. Native integrations with OpenAI, Anthropic, LangChain, and all major cloud providers."
-    known_orgs: ["Databricks"]
+    description: "Originally developed at Databricks. 30M+ monthly downloads. The
+      most widely adopted open-source AI engineering platform. Native
+      integrations with OpenAI, Anthropic, LangChain, and all major cloud
+      providers."
+    known_orgs: [ "Databricks" ]
     auto_verified: true
     provenance_score: 5
 
   category: observability
   subcategory: agent-observability
-  problem_solved: "End-to-end agent observability with trace ownership, built-in LLM judges, prompt optimization, and an AI gateway for governing LLM access across an org — no enterprise paywalls."
+  problem_solved: "End-to-end agent observability with trace ownership, built-in
+    LLM judges, prompt optimization, and an AI gateway for governing LLM access
+    across an org — no enterprise paywalls."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.193   # strong organic ratio
-    monthly_active_contributors: 89
-    download_velocity: 7500000  # 30M monthly / 4 weeks
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.221 # 5890 forks / 26691 stars
+    monthly_active_contributors: 39
+    download_velocity: 8896646 # pypi:mlflow (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.6
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 96
+    assay_score: 91
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "langgraph", "pydantic-ai", "crewai"]
-    file_patterns: ["agents/", "workflows/"]
+    dependencies:
+      [
+        "openai",
+        "anthropic",
+        "langchain",
+        "langgraph",
+        "pydantic-ai",
+        "crewai"
+      ]
+    file_patterns: [ "agents/", "workflows/" ]
     code_patterns:
       - "mlflow.start_run"
       - "agent.run"
       - "AgentExecutor"
 
   anti_signals:
-    dependencies: ["mlflow"]
-    file_patterns: ["mlflow.yml"]
+    dependencies: [ "mlflow" ]
+    file_patterns: [ "mlflow.yml" ]
 
-  relevance_note: "Your {signal} agent has no trace ownership or eval layer. MLflow gives you full end-to-end visibility into every step your agent takes without vendor lock-in."
+  relevance_note: "Your {signal} agent has no trace ownership or eval layer.
+    MLflow gives you full end-to-end visibility into every step your agent takes
+    without vendor lock-in."
 
   meta:
     added_by: plumb-maintainers
@@ -157,7 +202,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -172,39 +217,45 @@
   author: promptfoo
 
   author_provenance:
-    description: "Acquired by OpenAI in March 2026. Remains MIT licensed and model-agnostic. Used in CI/CD pipelines by OpenAI and Anthropic themselves. 30,000+ developers."
-    known_orgs: ["OpenAI", "Anthropic"]
+    description: "Acquired by OpenAI in March 2026. Remains MIT licensed and
+      model-agnostic. Used in CI/CD pipelines by OpenAI and Anthropic
+      themselves. 30,000+ developers."
+    known_orgs: [ "OpenAI", "Anthropic" ]
     auto_verified: true
     provenance_score: 5
 
   category: testing-evals
   subcategory: prompt-regression-testing
-  problem_solved: "Test runner for LLM outputs: define expected behaviors in YAML, run assertions across models, catch prompt regressions in CI before they reach production."
+  problem_solved: "Test runner for LLM outputs: define expected behaviors in YAML,
+    run assertions across models, catch prompt regressions in CI before they
+    reach production."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.071   # reasonable for a tool this focused
-    monthly_active_contributors: 44
-    download_velocity: 210000   # npm weekly
-    last_commit_days_ago: 4
+    fork_to_star_ratio: 0.089 # 2001 forks / 22482 stars
+    monthly_active_contributors: 31
+    download_velocity: 432407 # npm:promptfoo + pypi:promptfoo (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.4
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 88
+    assay_score: 73
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain"]
-    file_patterns: ["prompts/", "evals/", "promptfooconfig.yaml"]
+    dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk", "langchain" ]
+    file_patterns: [ "prompts/", "evals/", "promptfooconfig.yaml" ]
     code_patterns:
       - "openai.chat.completions"
       - "anthropic.messages.create"
 
   anti_signals:
-    dependencies: ["promptfoo"]
-    file_patterns: ["promptfooconfig.yaml", ".promptfoorc"]
+    dependencies: [ "promptfoo" ]
+    file_patterns: [ "promptfooconfig.yaml", ".promptfoorc" ]
 
-  relevance_note: "Your {signal} prompts have no regression test coverage. A change to your system prompt is indistinguishable from a regression until a user reports it."
+  relevance_note: "Your {signal} prompts have no regression test coverage. A
+    change to your system prompt is indistinguishable from a regression until a
+    user reports it."
 
   meta:
     added_by: plumb-maintainers
@@ -212,7 +263,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -223,39 +274,45 @@
   author: confident-ai
 
   author_provenance:
-    description: "Built by Confident AI (ex-Googler, ex-Microsoft AI). 50+ research-backed metrics. Runs 10M+ G-Eval evaluations monthly in production. Pytest-native so it runs in any CI/CD pipeline."
+    description: "Built by Confident AI (ex-Googler, ex-Microsoft AI). 50+
+      research-backed metrics. Runs 10M+ G-Eval evaluations monthly in
+      production. Pytest-native so it runs in any CI/CD pipeline."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: testing-evals
   subcategory: llm-metrics
-  problem_solved: "Pytest-native LLM evaluation framework with 50+ scored metrics — hallucination, faithfulness, answer relevancy, toxicity — runnable locally without a vendor API."
+  problem_solved: "Pytest-native LLM evaluation framework with 50+ scored metrics
+    — hallucination, faithfulness, answer relevancy, toxicity — runnable locally
+    without a vendor API."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.093   # 1300 forks / 13900 stars
-    monthly_active_contributors: 31
-    download_velocity: 185000   # PyPI weekly
-    last_commit_days_ago: 5
+    fork_to_star_ratio: 0.096 # 1574 forks / 16406 stars
+    monthly_active_contributors: 18
+    download_velocity: 2237895 # pypi:deepeval (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.1
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 84
+    assay_score: 70
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "llama-index", "pydantic-ai"]
-    file_patterns: ["tests/", "evals/", "test_*.py"]
+    dependencies: [ "openai", "anthropic", "langchain", "llama-index", "pydantic-ai" ]
+    file_patterns: [ "tests/", "evals/", "test_*.py" ]
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
 
   anti_signals:
-    dependencies: ["deepeval"]
+    dependencies: [ "deepeval" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} application has no LLM output validation. DeepEval's pytest integration lets you gate CI on hallucination rate and answer faithfulness before every deploy."
+  relevance_note: "Your {signal} application has no LLM output validation.
+    DeepEval's pytest integration lets you gate CI on hallucination rate and
+    answer faithfulness before every deploy."
 
   meta:
     added_by: plumb-maintainers
@@ -263,7 +320,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -274,37 +331,43 @@
   author: mattpocock
 
   author_provenance:
-    description: "Matt Pocock — TypeScript educator, ex-Vercel, creator of Total TypeScript. 74,500 stars. His personal .claude directory published as reusable engineering workflow skills."
-    known_orgs: ["Vercel"]
+    description: "Matt Pocock — TypeScript educator, ex-Vercel, creator of Total
+      TypeScript. 74,500 stars. His personal .claude directory published as
+      reusable engineering workflow skills."
+    known_orgs: [ "Vercel" ]
     auto_verified: true
     provenance_score: 5
 
   category: testing-evals
   subcategory: ai-workflow-discipline
-  problem_solved: "Encodes TDD, grilling sessions, PRD generation, and architectural review into Claude Code so the agent follows your team's engineering process rather than guessing."
+  problem_solved: "Encodes TDD, grilling sessions, PRD generation, and
+    architectural review into Claude Code so the agent follows your team's
+    engineering process rather than guessing."
 
-  languages: ["typescript", "javascript", "markdown"]
+  languages: [ "typescript", "javascript", "markdown" ]
 
   assay:
-    fork_to_star_ratio: 0.086   # 6400 forks / 74500 stars
-    monthly_active_contributors: 14
-    download_velocity: null     # not a package — skills directory
-    last_commit_days_ago: 5
+    fork_to_star_ratio: 0.086 # 12289 forks / 142089 stars
+    monthly_active_contributors: 2
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 4
     issue_quality_score: 4.2
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 87
+    assay_score: 56
 
   signals:
-    dependencies: ["@anthropic-ai/claude-code"]
-    file_patterns: [".claude/", "CLAUDE.md", "AGENTS.md"]
+    dependencies: [ "@anthropic-ai/claude-code" ]
+    file_patterns: [ ".claude/", "CLAUDE.md", "AGENTS.md" ]
     code_patterns: []
 
   anti_signals:
     dependencies: []
-    file_patterns: [".claude/commands/grill-me.md", ".claude/commands/tdd.md"]
+    file_patterns: [ ".claude/commands/grill-me.md", ".claude/commands/tdd.md" ]
 
-  relevance_note: "Your {signal} has no structured workflow commands. Pocock's skills encode grilling sessions, TDD loops, and PRD generation directly into your agent so discipline is the default, not the exception."
+  relevance_note: "Your {signal} has no structured workflow commands. Pocock's
+    skills encode grilling sessions, TDD loops, and PRD generation directly into
+    your agent so discipline is the default, not the exception."
 
   meta:
     added_by: plumb-maintainers
@@ -312,7 +375,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -327,40 +390,47 @@
   author: NVIDIA-NeMo
 
   author_provenance:
-    description: "Built and maintained by NVIDIA. Programmable guardrails toolkit for LLM-based conversational systems. Widely deployed in enterprise AI applications."
-    known_orgs: ["NVIDIA"]
+    description: "Built and maintained by NVIDIA. Programmable guardrails toolkit
+      for LLM-based conversational systems. Widely deployed in enterprise AI
+      applications."
+    known_orgs: [ "NVIDIA" ]
     auto_verified: true
     provenance_score: 5
 
   category: security
   subcategory: guardrails
-  problem_solved: "Adds programmable, declarative guardrails to any LLM-based system — topical, fact-checking, jailbreak, and output safety rails configurable without changing model code."
+  problem_solved: "Adds programmable, declarative guardrails to any LLM-based
+    system — topical, fact-checking, jailbreak, and output safety rails
+    configurable without changing model code."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.141   # solid organic ratio for an enterprise tool
-    monthly_active_contributors: 18
-    download_velocity: 42000    # PyPI weekly
-    last_commit_days_ago: 14
+    fork_to_star_ratio: 0.113 # 734 forks / 6506 stars
+    monthly_active_contributors: 10
+    download_velocity: 81043 # pypi:nemoguardrails (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.0
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 82
+    assay_score: 69
+    pypi: nemoguardrails
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain"]
-    file_patterns: ["prompts/", "agents/"]
+    dependencies: [ "openai", "anthropic", "langchain" ]
+    file_patterns: [ "prompts/", "agents/" ]
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
       - "LLMChain"
 
   anti_signals:
-    dependencies: ["nemoguardrails", "guardrails-ai"]
+    dependencies: [ "nemoguardrails", "guardrails-ai" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} has no guardrail layer between user input and the model. NeMo Guardrails lets you define topical boundaries and jailbreak protections in a declarative config."
+  relevance_note: "Your {signal} has no guardrail layer between user input and the
+    model. NeMo Guardrails lets you define topical boundaries and jailbreak
+    protections in a declarative config."
 
   meta:
     added_by: plumb-maintainers
@@ -368,7 +438,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -379,39 +449,45 @@
   author: protectai
 
   author_provenance:
-    description: "Built by Protect AI, a dedicated ML security company. MIT licensed. 15 input scanners and 20 output scanners. Runs fully offline — no vendor API call required."
+    description: "Built by Protect AI, a dedicated ML security company. MIT
+      licensed. 15 input scanners and 20 output scanners. Runs fully offline —
+      no vendor API call required."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: security
   subcategory: input-output-scanning
-  problem_solved: "Scans LLM inputs for prompt injection and PII, and LLM outputs for toxic content and sensitive data leakage — all offline, no external API dependency."
+  problem_solved: "Scans LLM inputs for prompt injection and PII, and LLM outputs
+    for toxic content and sensitive data leakage — all offline, no external API
+    dependency."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.110   # 342 forks / 3100 stars
-    monthly_active_contributors: 9
-    download_velocity: 18000    # PyPI weekly
-    last_commit_days_ago: 21
+    fork_to_star_ratio: 0.132 # 408 forks / 3097 stars
+    monthly_active_contributors: 0
+    download_velocity: 51866 # pypi:llm-guard (weekly)
+    last_commit_days_ago: 292
     issue_quality_score: 3.8
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 71
+    assay_score: 43
 
   signals:
-    dependencies: ["openai", "anthropic", "fastapi", "flask"]
+    dependencies: [ "openai", "anthropic", "fastapi", "flask" ]
     file_patterns: []
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
 
   anti_signals:
-    dependencies: ["llm-guard", "nemoguardrails"]
+    dependencies: [ "llm-guard", "nemoguardrails" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} passes user input to the model without scanning. LLM Guard's input scanners catch prompt injection and PII before the call is made."
+  relevance_note: "Your {signal} passes user input to the model without scanning.
+    LLM Guard's input scanners catch prompt injection and PII before the call is
+    made."
 
   meta:
     added_by: plumb-maintainers
@@ -419,7 +495,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -430,39 +506,45 @@
   author: promptfoo
 
   author_provenance:
-    description: "Promptfoo's red-teaming module is the most widely used open-source LLM security scanner — 50+ plugin categories covering prompt injection, jailbreaks, PII leakage, and OWASP LLM Top 10."
-    known_orgs: ["OpenAI"]
+    description: "Promptfoo's red-teaming module is the most widely used open-source
+      LLM security scanner — 50+ plugin categories covering prompt injection,
+      jailbreaks, PII leakage, and OWASP LLM Top 10."
+    known_orgs: [ "OpenAI" ]
     auto_verified: true
     provenance_score: 5
 
   category: security
   subcategory: red-teaming
-  problem_solved: "Automated red-teaming and vulnerability scanning for LLM applications — runs 50+ adversarial attack plugins in CI to find jailbreaks and data leakage before they reach production."
+  problem_solved: "Automated red-teaming and vulnerability scanning for LLM
+    applications — runs 50+ adversarial attack plugins in CI to find jailbreaks
+    and data leakage before they reach production."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.071
-    monthly_active_contributors: 44
-    download_velocity: 210000
-    last_commit_days_ago: 4
+    fork_to_star_ratio: 0.089 # 2001 forks / 22482 stars
+    monthly_active_contributors: 31
+    download_velocity: 423940 # npm:promptfoo (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.4
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 86
+    assay_score: 79
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk"]
-    file_patterns: ["prompts/", "agents/"]
+    dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk" ]
+    file_patterns: [ "prompts/", "agents/" ]
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
 
   anti_signals:
-    dependencies: ["promptfoo"]
-    file_patterns: ["promptfooconfig.yaml"]
+    dependencies: [ "promptfoo" ]
+    file_patterns: [ "promptfooconfig.yaml" ]
 
-  relevance_note: "Your {signal} application has never been red-teamed. Promptfoo's scanner runs 50+ adversarial plugins against your actual prompts to surface vulnerabilities before attackers do."
+  relevance_note: "Your {signal} application has never been red-teamed.
+    Promptfoo's scanner runs 50+ adversarial plugins against your actual prompts
+    to surface vulnerabilities before attackers do."
 
   meta:
     added_by: plumb-maintainers
@@ -470,7 +552,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -485,40 +567,55 @@
   author: explodinggradients
 
   author_provenance:
-    description: "Purpose-built RAG evaluation framework. Research-backed metrics adopted by the LangChain and LlamaIndex ecosystems. Reference cited in production RAG postmortems at multiple enterprises."
+    description: "Purpose-built RAG evaluation framework. Research-backed metrics
+      adopted by the LangChain and LlamaIndex ecosystems. Reference cited in
+      production RAG postmortems at multiple enterprises."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: rag-retrieval
   subcategory: retrieval-quality-evaluation
-  problem_solved: "Measures RAG pipeline quality with faithfulness, answer relevancy, context precision, and contextual recall — giving you objective scores to tune retrieval without guessing."
+  problem_solved: "Measures RAG pipeline quality with faithfulness, answer
+    relevancy, context precision, and contextual recall — giving you objective
+    scores to tune retrieval without guessing."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.162   # strong fork signal for an eval framework
-    monthly_active_contributors: 26
-    download_velocity: 98000    # PyPI weekly
-    last_commit_days_ago: 7
+    fork_to_star_ratio: 0.104 # 1500 forks / 14486 stars
+    monthly_active_contributors: 0
+    download_velocity: 402889 # pypi:ragas (weekly)
+    last_commit_days_ago: 118
     issue_quality_score: 4.2
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 85
+    assay_score: 44
+    pypi: ragas
 
   signals:
-    dependencies: ["langchain", "llama-index", "pinecone-client", "chromadb", "weaviate-client", "qdrant-client"]
-    file_patterns: ["evals/", "retrieval/"]
+    dependencies:
+      [
+        "langchain",
+        "llama-index",
+        "pinecone-client",
+        "chromadb",
+        "weaviate-client",
+        "qdrant-client"
+      ]
+    file_patterns: [ "evals/", "retrieval/" ]
     code_patterns:
       - "VectorStoreRetriever"
       - "PineconeVectorStore"
       - "QdrantVectorStore"
 
   anti_signals:
-    dependencies: ["ragas"]
+    dependencies: [ "ragas" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} retrieval has no quality measurement. Without Ragas you have no signal on whether retrieved chunks are actually improving answers or just adding noise."
+  relevance_note: "Your {signal} retrieval has no quality measurement. Without
+    Ragas you have no signal on whether retrieved chunks are actually improving
+    answers or just adding noise."
 
   meta:
     added_by: plumb-maintainers
@@ -526,7 +623,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -537,40 +634,58 @@
   author: run-llama
 
   author_provenance:
-    description: "LlamaIndex is the production RAG framework used by thousands of enterprise teams. The reranking module is one of the most impactful components — cross-encoder reranking reliably improves RAG answer quality by 15-30%."
+    description: "LlamaIndex is the production RAG framework used by thousands of
+      enterprise teams. The reranking module is one of the most impactful
+      components — cross-encoder reranking reliably improves RAG answer quality
+      by 15-30%."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: rag-retrieval
   subcategory: reranking
-  problem_solved: "Cross-encoder reranking re-scores retrieved chunks before they enter the context window, boosting answer faithfulness by 15–30% on most production query distributions."
+  problem_solved: "Cross-encoder reranking re-scores retrieved chunks before they
+    enter the context window, boosting answer faithfulness by 15–30% on most
+    production query distributions."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.148
-    monthly_active_contributors: 67
-    download_velocity: 620000   # llama-index-core PyPI weekly
-    last_commit_days_ago: 2
+    fork_to_star_ratio: 0.151 # 7606 forks / 50301 stars
+    monthly_active_contributors: 19
+    download_velocity: 1779676 # pypi:llama_index (weekly)
+    last_commit_days_ago: 5
     issue_quality_score: 4.3
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 89
+    assay_score: 78
 
   signals:
-    dependencies: ["pinecone-client", "chromadb", "qdrant-client", "weaviate-client", "faiss-cpu"]
-    file_patterns: ["retrieval/", "rag/"]
+    dependencies:
+      [
+        "pinecone-client",
+        "chromadb",
+        "qdrant-client",
+        "weaviate-client",
+        "faiss-cpu"
+      ]
+    file_patterns: [ "retrieval/", "rag/" ]
     code_patterns:
       - "VectorStoreIndex"
       - "PineconeVectorStore"
       - "top_k"
 
   anti_signals:
-    dependencies: ["llama-index-postprocessor-cohere-rerank", "llama-index-postprocessor-flag-embedding-reranker"]
+    dependencies:
+      [
+        "llama-index-postprocessor-cohere-rerank",
+        "llama-index-postprocessor-flag-embedding-reranker"
+      ]
     file_patterns: []
 
-  relevance_note: "Your {signal} top-k retrieval feeds directly into the prompt without reranking. A cross-encoder reranker takes under 10 lines to add and typically improves faithfulness significantly."
+  relevance_note: "Your {signal} top-k retrieval feeds directly into the prompt
+    without reranking. A cross-encoder reranker takes under 10 lines to add and
+    typically improves faithfulness significantly."
 
   meta:
     added_by: plumb-maintainers
@@ -578,7 +693,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -589,40 +704,46 @@
   author: infiniflow
 
   author_provenance:
-    description: "Leading open-source RAG engine combining retrieval with agent capabilities. Deep document understanding including layout-aware chunking for PDFs, tables, and charts."
+    description: "Leading open-source RAG engine combining retrieval with agent
+      capabilities. Deep document understanding including layout-aware chunking
+      for PDFs, tables, and charts."
     known_orgs: []
     auto_verified: false
     provenance_score: 3
 
   category: rag-retrieval
   subcategory: document-ingestion
-  problem_solved: "Production RAG engine with deep document understanding — layout-aware chunking preserves table structure and chart context that plain text extraction destroys."
+  problem_solved: "Production RAG engine with deep document understanding —
+    layout-aware chunking preserves table structure and chart context that plain
+    text extraction destroys."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.089
-    monthly_active_contributors: 22
-    download_velocity: null     # self-hosted, not a pip package
-    last_commit_days_ago: 3
+    fork_to_star_ratio: 0.116 # 9657 forks / 83387 stars
+    monthly_active_contributors: 56
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 0
     issue_quality_score: 3.9
     issue_quality_override: null
     provenance_score: 3
-    assay_score: 72
+    assay_score: 74
 
   signals:
-    dependencies: ["langchain", "openai", "anthropic"]
-    file_patterns: ["documents/", "ingestion/", "parsers/"]
+    dependencies: [ "langchain", "openai", "anthropic" ]
+    file_patterns: [ "documents/", "ingestion/", "parsers/" ]
     code_patterns:
       - "PyPDFLoader"
       - "TextLoader"
       - "DirectoryLoader"
 
   anti_signals:
-    dependencies: ["ragflow"]
+    dependencies: [ "ragflow" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} document ingestion uses basic text extraction. RAGFlow's layout-aware chunking preserves tables, charts, and document structure that improve retrieval precision significantly."
+  relevance_note: "Your {signal} document ingestion uses basic text extraction.
+    RAGFlow's layout-aware chunking preserves tables, charts, and document
+    structure that improve retrieval precision significantly."
 
   meta:
     added_by: plumb-maintainers
@@ -630,7 +751,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -645,40 +766,55 @@
   author: mem0ai
 
   author_provenance:
-    description: "Universal memory layer for AI agents. Multi-signal retrieval (semantic + BM25 + entity). 91.6 on LoCoMo benchmark, 94.8 on LongMemEval — state of the art. Used in production by thousands of AI teams."
+    description: "Universal memory layer for AI agents. Multi-signal retrieval
+      (semantic + BM25 + entity). 91.6 on LoCoMo benchmark, 94.8 on LongMemEval
+      — state of the art. Used in production by thousands of AI teams."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: context-management
   subcategory: persistent-memory
-  problem_solved: "Persistent, cross-session memory layer for AI agents — stores and retrieves user preferences, conversation history, and facts without filling the context window."
+  problem_solved: "Persistent, cross-session memory layer for AI agents — stores
+    and retrieves user preferences, conversation history, and facts without
+    filling the context window."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.118   # strong organic signal
-    monthly_active_contributors: 38
-    download_velocity: 142000   # mem0ai PyPI weekly
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.115 # 6827 forks / 59165 stars
+    monthly_active_contributors: 41
+    download_velocity: 703100 # pypi:mem0ai (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.3
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 88
+    assay_score: 78
+    pypi: mem0ai
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "redis", "chromadb", "qdrant-client"]
-    file_patterns: ["memory/", "sessions/"]
+    dependencies:
+      [
+        "openai",
+        "anthropic",
+        "langchain",
+        "redis",
+        "chromadb",
+        "qdrant-client"
+      ]
+    file_patterns: [ "memory/", "sessions/" ]
     code_patterns:
       - "redis.Redis"
       - "redis.StrictRedis"
       - "session_id"
 
   anti_signals:
-    dependencies: ["mem0ai", "mem0"]
+    dependencies: [ "mem0ai", "mem0" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} session handling resets context on every conversation. Mem0 gives your agent persistent memory across sessions with a two-line integration."
+  relevance_note: "Your {signal} session handling resets context on every
+    conversation. Mem0 gives your agent persistent memory across sessions with a
+    two-line integration."
 
   meta:
     added_by: plumb-maintainers
@@ -686,7 +822,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -697,39 +833,46 @@
   author: getzep
 
   author_provenance:
-    description: "Built by Zep AI. Dynamic temporal knowledge graph as agent memory — handles contradictions, time-awareness, and multi-hop reasoning that flat vector memory cannot."
+    description: "Built by Zep AI. Dynamic temporal knowledge graph as agent memory
+      — handles contradictions, time-awareness, and multi-hop reasoning that
+      flat vector memory cannot."
     known_orgs: []
     auto_verified: false
     provenance_score: 3
 
   category: context-management
   subcategory: knowledge-graph-memory
-  problem_solved: "Temporal knowledge graph for agent memory — handles evolving facts, contradictions, and multi-hop reasoning across long-running sessions that vector stores cannot represent."
+  problem_solved: "Temporal knowledge graph for agent memory — handles evolving
+    facts, contradictions, and multi-hop reasoning across long-running sessions
+    that vector stores cannot represent."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.103
-    monthly_active_contributors: 14
-    download_velocity: 18000    # PyPI weekly
-    last_commit_days_ago: 6
+    fork_to_star_ratio: 0.1 # 2778 forks / 27728 stars
+    monthly_active_contributors: 9
+    download_velocity: 387854 # pypi:graphiti-core (weekly)
+    last_commit_days_ago: 2
     issue_quality_score: 3.9
     issue_quality_override: null
     provenance_score: 3
-    assay_score: 74
+    assay_score: 62
+    pypi: graphiti-core
 
   signals:
-    dependencies: ["langchain", "openai", "anthropic", "neo4j"]
-    file_patterns: ["memory/", "graph/", "knowledge/"]
+    dependencies: [ "langchain", "openai", "anthropic", "neo4j" ]
+    file_patterns: [ "memory/", "graph/", "knowledge/" ]
     code_patterns:
       - "knowledge_graph"
       - "graph_memory"
 
   anti_signals:
-    dependencies: ["graphiti-core", "zep-cloud", "zep-python"]
+    dependencies: [ "graphiti-core", "zep-cloud", "zep-python" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} memory layer cannot handle evolving facts or temporal reasoning. Graphiti's knowledge graph tracks how facts change over time — critical for long-running agents."
+  relevance_note: "Your {signal} memory layer cannot handle evolving facts or
+    temporal reasoning. Graphiti's knowledge graph tracks how facts change over
+    time — critical for long-running agents."
 
   meta:
     added_by: plumb-maintainers
@@ -737,7 +880,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -752,37 +895,43 @@
   author: mattpocock
 
   author_provenance:
-    description: "Matt Pocock's personal .claude directory. The /grill-me skill alone has driven 74,500 stars. Workflow enforcement patterns that stop agents from skipping the steps that matter."
-    known_orgs: ["Vercel"]
+    description: "Matt Pocock's personal .claude directory. The /grill-me skill
+      alone has driven 74,500 stars. Workflow enforcement patterns that stop
+      agents from skipping the steps that matter."
+    known_orgs: [ "Vercel" ]
     auto_verified: true
     provenance_score: 5
 
   category: agent-patterns
   subcategory: workflow-enforcement
-  problem_solved: "Enforces engineering discipline in AI coding agents — grilling sessions, handoff between agents, prototype-first development, and PRD generation before any code is written."
+  problem_solved: "Enforces engineering discipline in AI coding agents — grilling
+    sessions, handoff between agents, prototype-first development, and PRD
+    generation before any code is written."
 
-  languages: ["typescript", "javascript", "markdown"]
+  languages: [ "typescript", "javascript", "markdown" ]
 
   assay:
-    fork_to_star_ratio: 0.086
-    monthly_active_contributors: 14
-    download_velocity: null
-    last_commit_days_ago: 5
+    fork_to_star_ratio: 0.086 # 12289 forks / 142089 stars
+    monthly_active_contributors: 2
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 4
     issue_quality_score: 4.2
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 87
+    assay_score: 56
 
   signals:
-    dependencies: ["@anthropic-ai/claude-code"]
-    file_patterns: [".claude/", "CLAUDE.md", "AGENTS.md"]
+    dependencies: [ "@anthropic-ai/claude-code" ]
+    file_patterns: [ ".claude/", "CLAUDE.md", "AGENTS.md" ]
     code_patterns: []
 
   anti_signals:
     dependencies: []
-    file_patterns: [".claude/commands/grill-me.md"]
+    file_patterns: [ ".claude/commands/grill-me.md" ]
 
-  relevance_note: "Your {signal} has no workflow commands. Without structured skills your agent defaults to taking shortcuts — writing code before requirements are clear and skipping tests."
+  relevance_note: "Your {signal} has no workflow commands. Without structured
+    skills your agent defaults to taking shortcuts — writing code before
+    requirements are clear and skipping tests."
 
   meta:
     added_by: plumb-maintainers
@@ -790,7 +939,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -801,40 +950,46 @@
   author: langchain-ai
 
   author_provenance:
-    description: "Built by LangChain. The leading open-source framework for building stateful, multi-agent workflows. Used in production by thousands of enterprise AI teams."
+    description: "Built by LangChain. The leading open-source framework for building
+      stateful, multi-agent workflows. Used in production by thousands of
+      enterprise AI teams."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: agent-patterns
   subcategory: multi-agent-orchestration
-  problem_solved: "Stateful multi-agent orchestration with cycles, branching, and checkpointing — turns LLM calls into a reliable graph-based workflow that can pause, resume, and recover."
+  problem_solved: "Stateful multi-agent orchestration with cycles, branching, and
+    checkpointing — turns LLM calls into a reliable graph-based workflow that
+    can pause, resume, and recover."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.131
-    monthly_active_contributors: 52
-    download_velocity: 890000   # PyPI weekly
-    last_commit_days_ago: 2
+    fork_to_star_ratio: 0.168 # 5952 forks / 35471 stars
+    monthly_active_contributors: 11
+    download_velocity: 15301002 # pypi:langgraph (weekly)
+    last_commit_days_ago: 3
     issue_quality_score: 4.3
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 90
+    assay_score: 73
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain"]
-    file_patterns: ["agents/", "workflows/", "graphs/"]
+    dependencies: [ "openai", "anthropic", "langchain" ]
+    file_patterns: [ "agents/", "workflows/", "graphs/" ]
     code_patterns:
       - "AgentExecutor"
       - "create_react_agent"
       - "tool_use"
 
   anti_signals:
-    dependencies: ["langgraph"]
+    dependencies: [ "langgraph" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} agent has no stateful orchestration layer. LangGraph adds cycles, branching, and checkpointing so your agent can handle complex multi-step tasks without losing state."
+  relevance_note: "Your {signal} agent has no stateful orchestration layer.
+    LangGraph adds cycles, branching, and checkpointing so your agent can handle
+    complex multi-step tasks without losing state."
 
   meta:
     added_by: plumb-maintainers
@@ -842,7 +997,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -853,37 +1008,44 @@
   author: obra
 
   author_provenance:
-    description: "Jesse Vincent — creator of Request Tracker, ex-Perl 5 pumpking, co-founder of Keyboardio. Simon Willison describes him as one of the most creative users of coding agents. 190,000 stars. Published in official Claude plugin marketplace."
+    description: "Jesse Vincent — creator of Request Tracker, ex-Perl 5 pumpking,
+      co-founder of Keyboardio. Simon Willison describes him as one of the most
+      creative users of coding agents. 190,000 stars. Published in official
+      Claude plugin marketplace."
     known_orgs: []
     auto_verified: false
     provenance_score: 5
 
   category: agent-patterns
   subcategory: autonomous-agent-framework
-  problem_solved: "Enables Claude Code to run autonomously for hours across a full project with brainstorming phases, written plans, and verification gates before execution."
+  problem_solved: "Enables Claude Code to run autonomously for hours across a full
+    project with brainstorming phases, written plans, and verification gates
+    before execution."
 
-  languages: ["markdown", "typescript", "javascript"]
+  languages: [ "markdown", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.041   # low fork ratio but 190k stars — genuine viral, not bought
-    monthly_active_contributors: 8
-    download_velocity: null
-    last_commit_days_ago: 12
+    fork_to_star_ratio: 0.089 # 20971 forks / 236223 stars
+    monthly_active_contributors: 12
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 4
     issue_quality_score: 4.0
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 79
+    assay_score: 67
 
   signals:
-    dependencies: ["@anthropic-ai/claude-code"]
-    file_patterns: [".claude/", "CLAUDE.md", "AGENTS.md"]
+    dependencies: [ "@anthropic-ai/claude-code" ]
+    file_patterns: [ ".claude/", "CLAUDE.md", "AGENTS.md" ]
     code_patterns: []
 
   anti_signals:
     dependencies: []
-    file_patterns: [".claude/plugins/superpowers"]
+    file_patterns: [ ".claude/plugins/superpowers" ]
 
-  relevance_note: "Your {signal} setup runs agents reactively with no autonomous planning layer. Superpowers adds structured brainstorming and verification gates before any long autonomous run."
+  relevance_note: "Your {signal} setup runs agents reactively with no autonomous
+    planning layer. Superpowers adds structured brainstorming and verification
+    gates before any long autonomous run."
 
   meta:
     added_by: plumb-maintainers
@@ -891,7 +1053,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -906,40 +1068,46 @@
   author: stanfordnlp
 
   author_provenance:
-    description: "Stanford NLP. Programs LLMs rather than prompting them — systematic, self-improving pipelines. Developed by Omar Khattab. Widely adopted in production ML teams at Google, Databricks, and VMware."
-    known_orgs: ["Stanford", "Google", "Databricks"]
+    description: "Stanford NLP. Programs LLMs rather than prompting them —
+      systematic, self-improving pipelines. Developed by Omar Khattab. Widely
+      adopted in production ML teams at Google, Databricks, and VMware."
+    known_orgs: [ "Stanford", "Google", "Databricks" ]
     auto_verified: true
     provenance_score: 5
 
   category: prompt-engineering
   subcategory: prompt-optimization
-  problem_solved: "Replaces hand-written prompts with declarative programs that automatically optimize themselves against a metric — ending the trial-and-error loop for complex LLM pipelines."
+  problem_solved: "Replaces hand-written prompts with declarative programs that
+    automatically optimize themselves against a metric — ending the
+    trial-and-error loop for complex LLM pipelines."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.139
-    monthly_active_contributors: 44
-    download_velocity: 210000   # PyPI weekly
-    last_commit_days_ago: 3
+    fork_to_star_ratio: 0.085 # 2994 forks / 35308 stars
+    monthly_active_contributors: 11
+    download_velocity: 1261094 # pypi:dspy (weekly)
+    last_commit_days_ago: 6
     issue_quality_score: 4.4
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 92
+    assay_score: 66
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain"]
-    file_patterns: ["prompts/", "chains/"]
+    dependencies: [ "openai", "anthropic", "langchain" ]
+    file_patterns: [ "prompts/", "chains/" ]
     code_patterns:
       - "system_prompt"
       - "few_shot"
       - "chain_of_thought"
 
   anti_signals:
-    dependencies: ["dspy-ai", "dspy"]
+    dependencies: [ "dspy-ai", "dspy" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} pipeline relies on hand-written prompts. DSPy replaces the trial-and-error loop with a declarative program that automatically optimizes prompts against your own metric."
+  relevance_note: "Your {signal} pipeline relies on hand-written prompts. DSPy
+    replaces the trial-and-error loop with a declarative program that
+    automatically optimizes prompts against your own metric."
 
   meta:
     added_by: plumb-maintainers
@@ -947,7 +1115,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -958,40 +1126,47 @@
   author: 567-labs
 
   author_provenance:
-    description: "Built by Jason Liu (ex-Stitch Fix ML). The standard for structured outputs from LLMs using Pydantic. Used by hundreds of production AI teams. 10,000+ stars."
+    description: "Built by Jason Liu (ex-Stitch Fix ML). The standard for structured
+      outputs from LLMs using Pydantic. Used by hundreds of production AI teams.
+      10,000+ stars."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
 
   category: prompt-engineering
   subcategory: structured-outputs
-  problem_solved: "Enforces structured, typed outputs from any LLM using Pydantic models — eliminating JSON parsing failures and making LLM responses as reliable as typed function returns."
+  problem_solved: "Enforces structured, typed outputs from any LLM using Pydantic
+    models — eliminating JSON parsing failures and making LLM responses as
+    reliable as typed function returns."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.077
-    monthly_active_contributors: 22
-    download_velocity: 168000   # PyPI weekly
-    last_commit_days_ago: 4
+    fork_to_star_ratio: 0.083 # 1090 forks / 13208 stars
+    monthly_active_contributors: 2
+    download_velocity: 3957165 # pypi:instructor (weekly)
+    last_commit_days_ago: 8
     issue_quality_score: 4.2
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 83
+    assay_score: 55
+    pypi: instructor
 
   signals:
-    dependencies: ["openai", "anthropic", "pydantic"]
-    file_patterns: ["schemas/", "models/", "parsers/"]
+    dependencies: [ "openai", "anthropic", "pydantic" ]
+    file_patterns: [ "schemas/", "models/", "parsers/" ]
     code_patterns:
       - "json.loads"
       - "response.choices[0].message.content"
       - "json_mode"
 
   anti_signals:
-    dependencies: ["instructor"]
+    dependencies: [ "instructor" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} parses LLM output with raw JSON parsing. Instructor wraps your LLM call with Pydantic validation and automatic retry — no more KeyError in production."
+  relevance_note: "Your {signal} parses LLM output with raw JSON parsing.
+    Instructor wraps your LLM call with Pydantic validation and automatic retry
+    — no more KeyError in production."
 
   meta:
     added_by: plumb-maintainers
@@ -999,7 +1174,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1010,29 +1185,33 @@
   author: BerriAI
 
   author_provenance:
-    description: "The unified LLM API — one interface for 100+ models across OpenAI, Anthropic, Bedrock, Azure, Gemini, and more. Used in production by Databricks, Hugging Face, and NASA. 20,000+ stars."
-    known_orgs: ["Databricks", "Hugging Face"]
+    description: "The unified LLM API — one interface for 100+ models across OpenAI,
+      Anthropic, Bedrock, Azure, Gemini, and more. Used in production by
+      Databricks, Hugging Face, and NASA. 20,000+ stars."
+    known_orgs: [ "Databricks", "Hugging Face" ]
     auto_verified: true
     provenance_score: 5
 
   category: prompt-engineering
   subcategory: model-abstraction
-  problem_solved: "Provides a single OpenAI-compatible interface for 100+ LLM providers — enabling model switching, fallbacks, load balancing, and cost routing without rewriting application code."
+  problem_solved: "Provides a single OpenAI-compatible interface for 100+ LLM
+    providers — enabling model switching, fallbacks, load balancing, and cost
+    routing without rewriting application code."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.121
-    monthly_active_contributors: 61
-    download_velocity: 580000   # PyPI weekly
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.177 # 9078 forks / 51176 stars
+    monthly_active_contributors: 13
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 0
     issue_quality_score: 4.4
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 93
+    assay_score: 76
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk"]
+    dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk" ]
     file_patterns: []
     code_patterns:
       - "openai.chat.completions.create"
@@ -1041,10 +1220,12 @@
       - "client = Anthropic"
 
   anti_signals:
-    dependencies: ["litellm"]
+    dependencies: [ "litellm" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} calls are hardcoded to a single provider. LiteLLM gives you model fallbacks, cost routing, and the ability to swap providers without touching your application code."
+  relevance_note: "Your {signal} calls are hardcoded to a single provider. LiteLLM
+    gives you model fallbacks, cost routing, and the ability to swap providers
+    without touching your application code."
 
   meta:
     added_by: plumb-maintainers
@@ -1052,7 +1233,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1063,29 +1244,33 @@
   author: Helicone
 
   author_provenance:
-    description: "YC W23. Open-source LLM observability via a one-line proxy or async logging. Used by Filevine, QA Wolf, and Sunrun. Apache-2.0 and fully self-hostable."
-    known_orgs: ["Y Combinator"]
+    description: "YC W23. Open-source LLM observability via a one-line proxy or
+      async logging. Used by Filevine, QA Wolf, and Sunrun. Apache-2.0 and fully
+      self-hostable."
+    known_orgs: [ "Y Combinator" ]
     auto_verified: true
     provenance_score: 4
 
   category: observability
   subcategory: cost-tracking
-  problem_solved: "Logs every LLM request through a drop-in proxy — per-request cost, latency, caching, rate limiting, and user-level usage — with no SDK rewrite."
+  problem_solved: "Logs every LLM request through a drop-in proxy — per-request
+    cost, latency, caching, rate limiting, and user-level usage — with no SDK
+    rewrite."
 
-  languages: ["python", "typescript", "javascript"]
+  languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.093   # ~340 forks / 3650 stars
-    monthly_active_contributors: 19
-    download_velocity: 16000    # @helicone/helpers npm weekly
-    last_commit_days_ago: 2
+    fork_to_star_ratio: 0.104 # 606 forks / 5848 stars
+    monthly_active_contributors: 1
+    download_velocity: 40 # npm:helicone (weekly)
+    last_commit_days_ago: 11
     issue_quality_score: 4.1
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 85
+    assay_score: 43
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain", "litellm"]
+    dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk", "langchain", "litellm" ]
     file_patterns: []
     code_patterns:
       - "openai.chat.completions"
@@ -1093,10 +1278,12 @@
       - "baseURL"
 
   anti_signals:
-    dependencies: ["@helicone/helpers", "helicone"]
+    dependencies: [ "@helicone/helpers", "helicone" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} traffic has no cost or usage tracking. Helicone routes it through a one-line proxy and gives you per-request cost, latency, and caching without an SDK rewrite."
+  relevance_note: "Your {signal} traffic has no cost or usage tracking. Helicone
+    routes it through a one-line proxy and gives you per-request cost, latency,
+    and caching without an SDK rewrite."
 
   meta:
     added_by: plumb-maintainers
@@ -1104,7 +1291,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1115,30 +1302,35 @@
   author: guardrails-ai
 
   author_provenance:
-    description: "The reference open-source framework for LLM output validation, backed by a community Guardrails Hub of reusable validators. Apache-2.0. Widely cited in production AI safety stacks."
+    description: "The reference open-source framework for LLM output validation,
+      backed by a community Guardrails Hub of reusable validators. Apache-2.0.
+      Widely cited in production AI safety stacks."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
 
   category: security
   subcategory: output-validation
-  problem_solved: "Validates and corrects LLM output against typed schemas and a hub of pluggable validators — catching PII, toxicity, hallucinated structure, and format violations before they reach users."
+  problem_solved: "Validates and corrects LLM output against typed schemas and a
+    hub of pluggable validators — catching PII, toxicity, hallucinated
+    structure, and format violations before they reach users."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.087   # ~420 forks / 4850 stars
-    monthly_active_contributors: 21
-    download_velocity: 95000    # guardrails-ai PyPI weekly
-    last_commit_days_ago: 4
+    fork_to_star_ratio: 0.088 # 621 forks / 7029 stars
+    monthly_active_contributors: 4
+    download_velocity: 50779 # pypi:guardrails-ai (weekly)
+    last_commit_days_ago: 3
     issue_quality_score: 4.0
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 86
+    assay_score: 57
+    pypi: guardrails-ai
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "llama-index", "instructor"]
-    file_patterns: ["prompts/"]
+    dependencies: [ "openai", "anthropic", "langchain", "llama-index", "instructor" ]
+    file_patterns: [ "prompts/" ]
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
@@ -1146,10 +1338,12 @@
       - "json.loads(response"
 
   anti_signals:
-    dependencies: ["guardrails-ai", "nemoguardrails", "llm-guard"]
-    file_patterns: ["rails/"]
+    dependencies: [ "guardrails-ai", "nemoguardrails", "llm-guard" ]
+    file_patterns: [ "rails/" ]
 
-  relevance_note: "You parse raw {signal} output with no validation layer. Guardrails AI enforces typed schemas and runs validators for PII, toxicity, and format before output reaches a user."
+  relevance_note: "You parse raw {signal} output with no validation layer.
+    Guardrails AI enforces typed schemas and runs validators for PII, toxicity,
+    and format before output reaches a user."
 
   meta:
     added_by: plumb-maintainers
@@ -1157,7 +1351,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1168,29 +1362,34 @@
   author: letta-ai
 
   author_provenance:
-    description: "Built by the UC Berkeley team behind the MemGPT paper, now Letta. Pioneered self-editing memory and the agent-as-OS model for context management. Apache-2.0."
-    known_orgs: ["UC Berkeley"]
+    description: "Built by the UC Berkeley team behind the MemGPT paper, now Letta.
+      Pioneered self-editing memory and the agent-as-OS model for context
+      management. Apache-2.0."
+    known_orgs: [ "UC Berkeley" ]
     auto_verified: true
     provenance_score: 5
 
   category: context-management
   subcategory: stateful-memory
-  problem_solved: "Gives agents persistent, self-editing memory backed by a database — long-term recall and a managed context window so conversations survive across sessions instead of resetting."
+  problem_solved: "Gives agents persistent, self-editing memory backed by a
+    database — long-term recall and a managed context window so conversations
+    survive across sessions instead of resetting."
 
-  languages: ["python", "typescript"]
+  languages: [ "python", "typescript" ]
 
   assay:
-    fork_to_star_ratio: 0.109   # ~1750 forks / 16000 stars
-    monthly_active_contributors: 32
-    download_velocity: 41000    # letta PyPI weekly
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.106 # 2494 forks / 23471 stars
+    monthly_active_contributors: 0
+    download_velocity: null # unpublished — category median
+    last_commit_days_ago: 39
     issue_quality_score: 4.2
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 90
+    assay_score: 50
+    pypi: letta
 
   signals:
-    dependencies: ["openai", "anthropic", "@anthropic-ai/sdk", "langchain"]
+    dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk", "langchain" ]
     file_patterns: []
     code_patterns:
       - "messages.append"
@@ -1199,10 +1398,12 @@
       - "system_prompt"
 
   anti_signals:
-    dependencies: ["letta", "mem0", "zep", "graphiti-core", "cognee"]
+    dependencies: [ "letta", "mem0", "zep", "graphiti-core", "cognee" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} agent rebuilds context from scratch every run. Letta adds persistent, self-editing memory so it remembers users and facts across sessions."
+  relevance_note: "Your {signal} agent rebuilds context from scratch every run.
+    Letta adds persistent, self-editing memory so it remembers users and facts
+    across sessions."
 
   meta:
     added_by: plumb-maintainers
@@ -1210,7 +1411,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1221,40 +1422,46 @@
   author: topoteretes
 
   author_provenance:
-    description: "Open-source memory engine that builds queryable knowledge graphs from your data via ECL (extract–cognify–load) pipelines. Apache-2.0, active research-driven roadmap."
+    description: "Open-source memory engine that builds queryable knowledge graphs
+      from your data via ECL (extract–cognify–load) pipelines. Apache-2.0,
+      active research-driven roadmap."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
 
   category: context-management
   subcategory: memory-pipeline
-  problem_solved: "Turns documents, conversations, and code into an interconnected knowledge graph so agents retrieve grounded, related facts instead of flat vector-similarity chunks."
+  problem_solved: "Turns documents, conversations, and code into an interconnected
+    knowledge graph so agents retrieve grounded, related facts instead of flat
+    vector-similarity chunks."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.101   # ~530 forks / 5250 stars
-    monthly_active_contributors: 17
-    download_velocity: 12500    # cognee PyPI weekly
-    last_commit_days_ago: 2
+    fork_to_star_ratio: 0.104 # 2007 forks / 19387 stars
+    monthly_active_contributors: 23
+    download_velocity: 23657 # pypi:cognee (weekly)
+    last_commit_days_ago: 1
     issue_quality_score: 3.9
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 82
+    assay_score: 65
 
   signals:
-    dependencies: ["openai", "anthropic", "llama-index", "langchain"]
-    file_patterns: ["rag/", "ingest/", "documents/"]
+    dependencies: [ "openai", "anthropic", "llama-index", "langchain" ]
+    file_patterns: [ "rag/", "ingest/", "documents/" ]
     code_patterns:
       - "embeddings.create"
       - "vector_store"
       - "similarity_search"
 
   anti_signals:
-    dependencies: ["cognee", "graphiti-core", "mem0", "zep"]
+    dependencies: [ "cognee", "graphiti-core", "mem0", "zep" ]
     file_patterns: []
 
-  relevance_note: "Your retrieval over {signal} is flat vector similarity with no relational structure. Cognee builds a knowledge graph from the same data so agents retrieve connected, grounded facts."
+  relevance_note: "Your retrieval over {signal} is flat vector similarity with no
+    relational structure. Cognee builds a knowledge graph from the same data so
+    agents retrieve connected, grounded facts."
 
   meta:
     added_by: plumb-maintainers
@@ -1262,7 +1469,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1273,30 +1480,43 @@
   author: deepset-ai
 
   author_provenance:
-    description: "Built and maintained by deepset. One of the most mature open-source frameworks for production RAG and search pipelines. Apache-2.0, used across enterprise search stacks."
-    known_orgs: ["deepset"]
+    description: "Built and maintained by deepset. One of the most mature
+      open-source frameworks for production RAG and search pipelines.
+      Apache-2.0, used across enterprise search stacks."
+    known_orgs: [ "deepset" ]
     auto_verified: true
     provenance_score: 5
 
   category: rag-retrieval
   subcategory: rag-framework
-  problem_solved: "Composable pipelines for production RAG and search — connect retrievers, rankers, and LLMs into a typed, branchable graph instead of hand-wiring retrieval glue code."
+  problem_solved: "Composable pipelines for production RAG and search — connect
+    retrievers, rankers, and LLMs into a typed, branchable graph instead of
+    hand-wiring retrieval glue code."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.103   # ~1900 forks / 18500 stars
-    monthly_active_contributors: 34
-    download_velocity: 175000   # haystack-ai PyPI weekly
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.112 # 2874 forks / 25635 stars
+    monthly_active_contributors: 37
+    download_velocity: 257838 # pypi:haystack-ai (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.4
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 91
+    assay_score: 78
 
   signals:
-    dependencies: ["openai", "anthropic", "sentence-transformers", "chromadb", "pinecone-client", "weaviate-client", "faiss-cpu"]
-    file_patterns: ["rag/", "retrieval/", "embeddings/"]
+    dependencies:
+      [
+        "openai",
+        "anthropic",
+        "sentence-transformers",
+        "chromadb",
+        "pinecone-client",
+        "weaviate-client",
+        "faiss-cpu"
+      ]
+    file_patterns: [ "rag/", "retrieval/", "embeddings/" ]
     code_patterns:
       - "similarity_search"
       - "embeddings.create"
@@ -1304,10 +1524,12 @@
       - "retriever"
 
   anti_signals:
-    dependencies: ["haystack-ai", "farm-haystack", "llama-index"]
+    dependencies: [ "haystack-ai", "farm-haystack", "llama-index" ]
     file_patterns: []
 
-  relevance_note: "Your RAG over {signal} is hand-wired retrieval glue. Haystack gives you composable, typed retriever→ranker→LLM pipelines that are easier to test and swap components in."
+  relevance_note: "Your RAG over {signal} is hand-wired retrieval glue. Haystack
+    gives you composable, typed retriever→ranker→LLM pipelines that are easier
+    to test and swap components in."
 
   meta:
     added_by: plumb-maintainers
@@ -1315,7 +1537,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1325,30 +1547,35 @@
   repo: https://github.com/crewAIInc/crewAI
   author: crewAIInc
   author_provenance:
-    description: "Standalone (no LangChain dependency) framework for role-based multi-agent orchestration. Large adopter base and an enterprise offering; MIT licensed core."
+    description: "Standalone (no LangChain dependency) framework for role-based
+      multi-agent orchestration. Large adopter base and an enterprise offering;
+      MIT licensed core."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
 
   category: agent-patterns
   subcategory: role-based-agents
-  problem_solved: "Coordinates teams of role-specialized agents with explicit tasks, delegation, and sequential or hierarchical processes — structure for multi-step work that ad-hoc agent loops lack."
+  problem_solved: "Coordinates teams of role-specialized agents with explicit
+    tasks, delegation, and sequential or hierarchical processes — structure for
+    multi-step work that ad-hoc agent loops lack."
 
-  languages: ["python"]
+  languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.131   # ~4100 forks / 31200 stars
-    monthly_active_contributors: 47
-    download_velocity: 260000   # crewai PyPI weekly
-    last_commit_days_ago: 1
+    fork_to_star_ratio: 0.14 # 7587 forks / 54182 stars
+    monthly_active_contributors: 13
+    download_velocity: 2893670 # pypi:crewai (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 4.0
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 89
+    assay_score: 68
+    pypi: crewai
 
   signals:
-    dependencies: ["openai", "anthropic", "langchain", "litellm"]
-    file_patterns: ["agents/", "tools/"]
+    dependencies: [ "openai", "anthropic", "langchain", "litellm" ]
+    file_patterns: [ "agents/", "tools/" ]
     code_patterns:
       - "while True"
       - "tool_calls"
@@ -1356,10 +1583,12 @@
       - "def run_agent"
 
   anti_signals:
-    dependencies: ["crewai", "langgraph", "autogen", "llama-index"]
+    dependencies: [ "crewai", "langgraph", "autogen", "llama-index" ]
     file_patterns: []
 
-  relevance_note: "Your {signal} agent logic is an ad-hoc loop. CrewAI gives role-specialized agents explicit tasks, delegation, and sequential/hierarchical processes for multi-step work."
+  relevance_note: "Your {signal} agent logic is an ad-hoc loop. CrewAI gives
+    role-specialized agents explicit tasks, delegation, and
+    sequential/hierarchical processes for multi-step work."
 
   meta:
     added_by: plumb-maintainers
@@ -1367,7 +1596,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-06-22T00:00:00Z
+    last_auto_scored: 2026-06-23T05:20:54.128Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null

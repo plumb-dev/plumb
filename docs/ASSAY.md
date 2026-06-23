@@ -12,7 +12,7 @@ GitHub stars are a weak signal for real adoption and an actively gamed one. By m
 
 Forks represent intent to use or modify. Stars represent a moment of interest. Healthy projects maintain a fork-to-star ratio between 0.10 and 0.25. Below 0.05 on a high-star repo is a flag.
 
-Scored 0–100 using a sigmoid curve centered at 0.15.
+Scored 0–100 using a sigmoid curve centered at 0.10. The centre was recalibrated from an initial 0.15 after the first live run over the seed registry: real AI/LLM repositories cluster between 0.06 and 0.18 (with mlflow at 0.22 a high outlier), so a 0.15 centre scored almost the entire category as mediocre. Centring at the observed band entry point (0.10 → 50) preserves the curve's intent — flagging genuinely low ratios — without penalising the field as a whole.
 
 ### 2. Monthly active contributors (weight: 25%)
 

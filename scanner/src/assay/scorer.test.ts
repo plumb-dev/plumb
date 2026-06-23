@@ -20,10 +20,10 @@ test('weights sum to 1.0', () => {
   near(sum, 1.0, 1e-9);
 });
 
-test('fork-to-star sigmoid is centred at 0.15', () => {
-  near(forkToStarScore(0.15), 50);
-  assert.ok(forkToStarScore(0.25) > forkToStarScore(0.15));
-  assert.ok(forkToStarScore(0.05) < 20); // <0.05 is a flag → low score
+test('fork-to-star sigmoid is centred at 0.10 (recalibrated)', () => {
+  near(forkToStarScore(0.10), 50);
+  assert.ok(forkToStarScore(0.20) > forkToStarScore(0.10));
+  assert.ok(forkToStarScore(0.02) < 25); // very low ratio → flagged
   assert.equal(forkToStarScore(-1), 0);
 });
 

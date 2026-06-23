@@ -109,11 +109,11 @@ This exposes two tools to your agent: `plumb_scan` (scan a repo) and
 Plumb report for github.com/acme/support-bot
 
   Observability      ●○○○○   You call openai + anthropic with zero tracing.
-                             → OpenLLMetry (assay 93) · Langfuse (assay 91)
+                             → Langfuse (assay 76) · OpenLLMetry (assay 63)
   Testing & Evals    ○○○○○   No eval harness found.
-                             → promptfoo (assay 92) · DeepEval (assay 88)
+                             → promptfoo (assay 73) · DeepEval (assay 70)
   Security           ●●○○○   Inputs reach the model unscreened.
-                             → LLM Guard (assay 86) · NeMo Guardrails (assay 84)
+                             → NeMo Guardrails (assay 69) · LLM Guard (assay 43)
   Context Mgmt       ●●●●○   mem0 detected — you're covered.
 ```
 
