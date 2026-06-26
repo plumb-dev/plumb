@@ -36,6 +36,8 @@ docs/                     ASSAY.md (scoring method) · CONTRIBUTING.md · plumb-
 - `npm install` (root) — installs all workspaces (hoisted).
 - `cd <pkg> && npm run build` — compiles that package with `tsc`.
 - `cd scanner && npx ts-node src/cli.ts scan https://github.com/owner/repo` — run a scan.
+  Add `--deep` for code-pattern matching, `--triage` to filter recommendations by
+  architecture fit via Claude (apply / already-covered / not-applicable; needs ANTHROPIC_API_KEY).
 - `cd scanner && npm run assay -- --write` — re-score the registry from live data.
 - `cd scanner && npx ts-node src/cli.ts ingest owner/repo [--org-id <id>] --write` — generate
   and admit a full entry from a bare repo URL (needs ANTHROPIC_API_KEY).

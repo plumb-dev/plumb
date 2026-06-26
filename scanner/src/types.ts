@@ -150,6 +150,9 @@ export interface MatchedSignal {
   locations?: string[];
 }
 
+/** Architecture-aware triage verdict from the applicability filter. */
+export type ApplicabilityVerdict = 'apply' | 'covered' | 'skip';
+
 export interface RecommendationResult {
   entry: RegistryEntry;
   matchedSignals: MatchedSignal[];
@@ -157,6 +160,8 @@ export interface RecommendationResult {
   renderedNote: string;
   /** Whether an anti_signal was found (reduces confidence) */
   hasAntiSignal: boolean;
+  /** Set by the optional applicability filter (scan --triage). */
+  applicability?: { verdict: ApplicabilityVerdict; reason: string };
 }
 
 export interface CategoryResult {

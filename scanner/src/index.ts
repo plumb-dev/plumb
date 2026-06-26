@@ -25,3 +25,7 @@ export { CATEGORIES, CATEGORY_LABELS } from './types';
 
 // Assay scoring engine — re-scores registry entries from live GitHub + package data.
 export * from './assay';
+
+// Applicability filter — triages scan recommendations by architecture fit.
+export { ApplicabilityFilter } from './applicability';
+export type { TriageVerdict } from './applicability';

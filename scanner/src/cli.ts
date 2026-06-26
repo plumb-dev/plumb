@@ -7,7 +7,8 @@ import * as fs from 'fs';
 import { parse, stringify } from 'yaml';
 import { PlumbScanner } from './scanner';
 import { AssayEngine, writeScores, ingestRepos } from './assay';
-import type { PlumbReport, CategoryResult, RegistryEntry } from './types';
+import { ApplicabilityFilter } from './applicability';
+import type { PlumbReport, CategoryResult, RegistryEntry, RecommendationResult } from './types';
 import type { AssayRunResult, IngestResult } from './assay';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,6 +36,7 @@ program
   .option('-f, --format <format>', 'Output format: terminal | json | markdown', 'terminal')
   .option('-o, --output <file>', 'Write output to a file instead of stdout')
   .option('--registry <dir>', 'Path to a local registry directory (default: bundled)')
+  .option('--triage', 'Filter recommendations by architecture fit via Claude (needs ANTHROPIC_API_KEY)', false)
   .action(async (target: string, options) => {
     const spinner = ora({ color: 'yellow' });
 
@@ -54,16 +56,27 @@ program
       });
 
       const report = await scanner.scan({ input: target });
+
+      if (options.triage) {
+        const key = process.env.ANTHROPIC_API_KEY;
+        if (!key) { spinner.stop(); throw new Error('--triage needs an Anthropic API key. Set ANTHROPIC_API_KEY.'); }
+        spinner.text = chalk.dim('triaging recommendations by architecture fit…');
+        if (!spinner.isSpinning) spinner.start();
+        await new ApplicabilityFilter({ anthropicApiKey: key }).triage(report);
+      }
       spinner.stop();
+
+      const triaged = report.categories.some(c => c.recommendations.some(r => r.applicability));
 
       switch (options.format) {
         case 'json':
           outputJson(report, options.output);
           break;
         case 'markdown':
-          outputMarkdown(report, options.output);
+          (triaged ? outputMarkdownTriaged : outputMarkdown)(report, options.output);
           break;
         default:
+          if (triaged) { outputTerminalTriaged(report); break; }
           outputTerminal(report);
       }
 
@@ -419,6 +432,128 @@ function outputMarkdown(report: PlumbReport, outputFile?: string): void {
       );
       lines.push('');
     }
+  }
+
+  lines.push('---');
+  lines.push(`*Registry: ${report.registryCommit} · Generated: ${report.generatedAt}*`);
+
+  const md = lines.join('\n');
+  if (outputFile) {
+    fs.writeFileSync(outputFile, md, 'utf-8');
+    console.log(`Written to ${outputFile}`);
+  } else {
+    console.log(md);
+  }
+}
+
+// ── Triaged output (scan --triage) ───────────────────────────────────────────
+
+const byVerdict = (recs: RecommendationResult[], v: string) =>
+  recs.filter(r => r.applicability?.verdict === v);
+
+function outputTerminalTriaged(report: PlumbReport): void {
+  const { fingerprint: fp, categories } = report;
+  const gold = chalk.hex('#C8B560');
+  const dim = chalk.dim;
+  const green = chalk.green;
+
+  const all = categories.flatMap(c => c.recommendations);
+  const apply = byVerdict(all, 'apply');
+  const covered = byVerdict(all, 'covered');
+  const skip = byVerdict(all, 'skip');
+
+  console.log('');
+  console.log(gold.bold('  PLUMB') + dim(' · Assay v1.0 · triaged for your architecture'));
+  console.log('');
+  console.log('  ' + chalk.bold(fp.meta.fullName));
+  if (fp.meta.description) console.log('  ' + dim(fp.meta.description));
+  console.log('  ' + dim(`commit ${fp.meta.commit.slice(0, 7)} · ${fp.deepScan ? 'deep scan' : 'api scan'}`));
+  console.log('');
+  console.log(
+    `  ${green.bold(apply.length + ' worth adopting')}  ` +
+    `${dim(covered.length + ' already covered')}  ` +
+    `${dim(skip.length + ' not applicable')}`);
+  console.log('');
+  console.log(dim('  ' + '─'.repeat(60)));
+
+  for (const cat of categories) {
+    const recs = byVerdict(cat.recommendations, 'apply');
+    if (recs.length === 0) continue;
+    console.log('');
+    console.log('  ' + green('● ') + chalk.bold(cat.label));
+    for (const rec of recs) {
+      console.log('');
+      console.log(
+        '    ' + chalk.bold(rec.entry.name) +
+        dim(' · assay ') + gold.bold(String(rec.entry.assay.assay_score)) +
+        dim(' · ' + rec.entry.repo.replace('https://github.com/', '')));
+      console.log('    ' + chalk.italic(rec.applicability?.reason || rec.renderedNote));
+    }
+  }
+
+  if (covered.length) {
+    console.log('');
+    console.log(dim('  ' + '─'.repeat(60)));
+    console.log('');
+    console.log('  ' + chalk.bold('Already covered'));
+    for (const r of covered) {
+      console.log('    ' + green('✓ ') + r.entry.name + dim(` — ${r.applicability?.reason ?? ''}`));
+    }
+  }
+  if (skip.length) {
+    console.log('');
+    console.log('  ' + chalk.bold('Not applicable'));
+    for (const r of skip) {
+      console.log('    ' + dim('· ' + r.entry.name + ` — ${r.applicability?.reason ?? ''}`));
+    }
+  }
+
+  console.log('');
+  console.log(dim('  ' + '─'.repeat(60)));
+  console.log('  ' + dim(`Registry: ${report.registryCommit} · ${report.generatedAt}`));
+  console.log('');
+}
+
+function outputMarkdownTriaged(report: PlumbReport, outputFile?: string): void {
+  const { fingerprint: fp, categories } = report;
+  const all = categories.flatMap(c => c.recommendations);
+  const apply = byVerdict(all, 'apply');
+  const covered = byVerdict(all, 'covered');
+  const skip = byVerdict(all, 'skip');
+
+  const lines: string[] = [];
+  lines.push(`# Plumb Report: \`${fp.meta.fullName}\``);
+  lines.push('');
+  lines.push(`> Scanned by [Plumb](https://plumb.dev) · Assay v1.0 · triaged for architecture fit · commit \`${fp.meta.commit.slice(0, 7)}\``);
+  lines.push('');
+  lines.push(`**${apply.length} worth adopting · ${covered.length} already covered · ${skip.length} not applicable**`);
+  lines.push('');
+
+  lines.push('## Recommended for your stack');
+  lines.push('');
+  for (const cat of categories) {
+    const recs = byVerdict(cat.recommendations, 'apply');
+    if (recs.length === 0) continue;
+    lines.push(`### ${cat.label}`);
+    lines.push('');
+    for (const rec of recs) {
+      lines.push(`- **[${rec.entry.name}](${rec.entry.repo})** · assay ${rec.entry.assay.assay_score} — ${rec.applicability?.reason || rec.renderedNote}`);
+    }
+    lines.push('');
+  }
+  if (apply.length === 0) { lines.push('_Nothing flagged as a clear fit._', ''); }
+
+  if (covered.length) {
+    lines.push('## Already covered');
+    lines.push('');
+    for (const r of covered) lines.push(`- **${r.entry.name}** — ${r.applicability?.reason ?? ''}`);
+    lines.push('');
+  }
+  if (skip.length) {
+    lines.push('## Not applicable');
+    lines.push('');
+    for (const r of skip) lines.push(`- ${r.entry.name} — ${r.applicability?.reason ?? ''}`);
+    lines.push('');
   }
 
   lines.push('---');
