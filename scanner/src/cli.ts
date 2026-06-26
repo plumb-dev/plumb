@@ -172,6 +172,7 @@ program
   .option('-t, --token <token>', 'GitHub PAT (recommended)')
   .option('--threshold <n>', 'Minimum assay_score to admit', '60')
   .option('--org-id <id>', 'Mint private enterprise entries (visibility: org) under this org id')
+  .option('--gen-model <id>', 'Model for entry generation', 'claude-sonnet-4-6')
   .option('--write', 'Append admitted entries to the registry file (default: dry-run)', false)
   .option('-o, --output <file>', 'Registry file to append to')
   .action(async (targets: string[], options) => {
@@ -191,6 +192,7 @@ program
         threshold: parseInt(options.threshold, 10) || 60,
         visibility: orgId ? 'org' : 'public',
         orgId,
+        genModel: options.genModel,
         scoreIssues: true, // the key is already required for generation; score all six
       });
       spinner.stop();

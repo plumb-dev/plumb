@@ -22,7 +22,11 @@ import { CATEGORIES, type Category, type RegistryEntry } from '../types';
 // per-category download medians are real.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const GEN_MODEL = 'claude-haiku-4-5';
+// Sonnet for generation: inferring consumer-side signals (what a CONSUMER repo
+// would import to need this tool) is a reasoning task where Sonnet clearly beats
+// Haiku, and ingestion is low-volume + human-reviewed so the cost is negligible.
+// (Issue-quality scoring stays on Haiku — high-volume, objective criteria.)
+const GEN_MODEL = 'claude-sonnet-4-6';
 const README_TRUNCATE = 4000;
 
 interface GeneratedMeta {
