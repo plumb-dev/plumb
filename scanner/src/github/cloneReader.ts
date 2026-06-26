@@ -87,7 +87,9 @@ export class CloneReader {
     const allFiles: string[] = [];
 
     for (const ext of SOURCE_EXTENSIONS) {
-      const found = await glob(ext, {
+      // `**/` makes this recursive — `*.py` alone only matches the repo root,
+      // missing everything under backend/, src/, etc.
+      const found = await glob(`**/${ext}`, {
         cwd: repoPath,
         absolute: true,
         ignore: IGNORE_DIRS.map(d => `**/${d}/**`),

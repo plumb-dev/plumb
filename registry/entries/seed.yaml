@@ -59,6 +59,7 @@
       - "openai.chat.completions"
       - "anthropic.messages.create"
       - "client.chat.completions.create"
+      - client.messages.create
 
   anti_signals:
     dependencies:
@@ -121,6 +122,7 @@
     code_patterns:
       - "openai.chat.completions"
       - "anthropic.messages.create"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "langfuse", "langfuse-python" ]
@@ -249,6 +251,7 @@
     code_patterns:
       - "openai.chat.completions"
       - "anthropic.messages.create"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "promptfoo" ]
@@ -306,6 +309,7 @@
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "deepeval" ]
@@ -424,6 +428,7 @@
       - "anthropic.messages.create"
       - "openai.chat.completions"
       - "LLMChain"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "nemoguardrails", "guardrails-ai" ]
@@ -481,6 +486,7 @@
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "llm-guard", "nemoguardrails" ]
@@ -538,6 +544,7 @@
     code_patterns:
       - "anthropic.messages.create"
       - "openai.chat.completions"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "promptfoo" ]
@@ -1219,6 +1226,7 @@
       - "anthropic.messages.create"
       - "client = OpenAI"
       - "client = Anthropic"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "litellm" ]
@@ -1277,6 +1285,7 @@
       - "openai.chat.completions"
       - "anthropic.messages.create"
       - "baseURL"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "@helicone/helpers", "helicone" ]
@@ -1337,6 +1346,7 @@
       - "openai.chat.completions"
       - "response_format"
       - "json.loads(response"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "guardrails-ai", "nemoguardrails", "llm-guard" ]
@@ -1397,6 +1407,7 @@
       - "conversation_history"
       - "anthropic.messages.create"
       - "system_prompt"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "letta", "mem0", "zep", "graphiti-core", "cognee" ]
@@ -1582,6 +1593,7 @@
       - "tool_calls"
       - "anthropic.messages.create"
       - "def run_agent"
+      - client.messages.create
 
   anti_signals:
     dependencies: [ "crewai", "langgraph", "autogen", "llama-index" ]
