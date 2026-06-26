@@ -20,11 +20,16 @@ export class RegistryLoader {
 
   // ── Load from local directory (dev) ────────────────────────────────────
 
+  /** Template/illustration files that must not be loaded as live registry data. */
+  private static readonly TEMPLATE_FILES = new Set(['examples.yaml', 'examples.yml']);
+
   loadLocal(registryDir: string): void {
     const yamlFiles = fs
       .readdirSync(registryDir)
-      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+      .filter(f => f.endsWith('.yaml') || f.endsWith('.yml'))
+      .filter(f => !RegistryLoader.TEMPLATE_FILES.has(f)); // skip templates (e.g. examples.yaml)
 
+    const seen = new Set(this.entries.map(e => e.id));
     for (const file of yamlFiles) {
       const content = fs.readFileSync(path.join(registryDir, file), 'utf-8');
       const parsed = parse(content);
@@ -32,9 +37,11 @@ export class RegistryLoader {
       // Files may contain a single entry or an array
       const raw = Array.isArray(parsed) ? parsed : [parsed];
       for (const entry of raw) {
-        if (this.validateEntry(entry)) {
-          this.entries.push(entry as RegistryEntry);
-        }
+        if (!this.validateEntry(entry)) continue;
+        const e = entry as RegistryEntry;
+        if (seen.has(e.id)) continue; // first occurrence wins — no duplicate recommendations
+        seen.add(e.id);
+        this.entries.push(e);
       }
     }
 
