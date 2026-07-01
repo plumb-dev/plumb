@@ -15,11 +15,11 @@
   author: traceloop
 
   author_provenance:
-    description: "Built by Traceloop, a YC-backed observability company.
-      OpenLLMetry's semantic conventions for LLM were adopted by the
-      OpenTelemetry project itself. Integrations shipped by Datadog and
-      Honeycomb."
-    known_orgs: [ "Y Combinator", "Datadog" ]
+    description: "Built by Traceloop (YC-backed). Open-source OpenTelemetry-based
+      instrumentation for LLM and vector-DB calls, exporting traces to standard
+      observability backends. Apache-2.0."
+    known_orgs:
+      - Y Combinator
     auto_verified: true
     provenance_score: 5
 
@@ -91,10 +91,11 @@
   author: langfuse
 
   author_provenance:
-    description: "YC W23. Acquired by ClickHouse in early 2026. MIT licensed. 29,500
-      stars, 3,000 forks. The de-facto open-source LLM engineering platform for
-      self-hosting teams."
-    known_orgs: [ "Y Combinator", "ClickHouse" ]
+    description: "YC-backed (W23). Open-source LLM engineering platform — tracing,
+      prompt management, evals, and cost/quality monitoring, self-hostable via
+      Docker. MIT licensed."
+    known_orgs:
+      - Y Combinator
     auto_verified: true
     provenance_score: 5
 
@@ -149,11 +150,12 @@
   author: mlflow
 
   author_provenance:
-    description: "Originally developed at Databricks. 30M+ monthly downloads. The
-      most widely adopted open-source AI engineering platform. Native
-      integrations with OpenAI, Anthropic, LangChain, and all major cloud
-      providers."
-    known_orgs: [ "Databricks" ]
+    description: "Originally developed at Databricks; a widely adopted open-source
+      platform for the ML and LLM lifecycle — experiment tracking, evaluation,
+      and model governance, with integrations across major LLM providers.
+      Apache-2.0."
+    known_orgs:
+      - Databricks
     auto_verified: true
     provenance_score: 5
 
@@ -220,10 +222,10 @@
   author: promptfoo
 
   author_provenance:
-    description: "Acquired by OpenAI in March 2026. Remains MIT licensed and
-      model-agnostic. Used in CI/CD pipelines by OpenAI and Anthropic
-      themselves. 30,000+ developers."
-    known_orgs: [ "OpenAI", "Anthropic" ]
+    description: "Open-source, model-agnostic test runner for LLM outputs — define
+      expected behaviors and run assertions across models to catch prompt
+      regressions in CI. MIT licensed."
+    known_orgs: []
     auto_verified: true
     provenance_score: 5
 
@@ -278,9 +280,9 @@
   author: confident-ai
 
   author_provenance:
-    description: "Built by Confident AI (ex-Googler, ex-Microsoft AI). 50+
-      research-backed metrics. Runs 10M+ G-Eval evaluations monthly in
-      production. Pytest-native so it runs in any CI/CD pipeline."
+    description: "Built by Confident AI. Pytest-native LLM evaluation framework with
+      a large library of research-backed metrics (faithfulness, hallucination,
+      relevancy, toxicity) that run in any CI pipeline. Apache-2.0."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
@@ -336,10 +338,10 @@
   author: mattpocock
 
   author_provenance:
-    description: "Matt Pocock — TypeScript educator, ex-Vercel, creator of Total
-      TypeScript. 74,500 stars. His personal .claude directory published as
-      reusable engineering workflow skills."
-    known_orgs: [ "Vercel" ]
+    description: "Matt Pocock — TypeScript educator and creator of Total TypeScript.
+      A published Claude Code skills collection encoding engineering-discipline
+      workflows (TDD loops, PRD generation, review) for coding agents."
+    known_orgs: []
     auto_verified: false
     provenance_score: 5
 
@@ -395,10 +397,11 @@
   author: NVIDIA-NeMo
 
   author_provenance:
-    description: "Built and maintained by NVIDIA. Programmable guardrails toolkit
-      for LLM-based conversational systems. Widely deployed in enterprise AI
-      applications."
-    known_orgs: [ "NVIDIA" ]
+    description: "Built and maintained by NVIDIA. Open-source toolkit for adding
+      programmable, declarative guardrails (topical, safety, jailbreak,
+      fact-checking) to LLM conversational systems. Apache-2.0."
+    known_orgs:
+      - NVIDIA
     auto_verified: true
     provenance_score: 5
 
@@ -455,9 +458,9 @@
   author: protectai
 
   author_provenance:
-    description: "Built by Protect AI, a dedicated ML security company. MIT
-      licensed. 15 input scanners and 20 output scanners. Runs fully offline —
-      no vendor API call required."
+    description: "Built by Protect AI, an ML-security company. Open-source scanners
+      for LLM inputs (prompt injection, PII) and outputs (toxicity,
+      sensitive-data leakage) that run fully offline. MIT licensed."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
@@ -513,10 +516,10 @@
   author: promptfoo
 
   author_provenance:
-    description: "Promptfoo's red-teaming module is the most widely used open-source
-      LLM security scanner — 50+ plugin categories covering prompt injection,
-      jailbreaks, PII leakage, and OWASP LLM Top 10."
-    known_orgs: [ "OpenAI" ]
+    description: "Promptfoo's red-teaming module — open-source adversarial scanning
+      for LLM apps with plugins covering prompt injection, jailbreaks, PII
+      leakage, and the OWASP LLM Top 10. MIT licensed."
+    known_orgs: []
     auto_verified: true
     provenance_score: 5
 
@@ -575,9 +578,9 @@
   author: vibrantlabsai
 
   author_provenance:
-    description: "Purpose-built RAG evaluation framework. Research-backed metrics
-      adopted by the LangChain and LlamaIndex ecosystems. Reference cited in
-      production RAG postmortems at multiple enterprises."
+    description: "Open-source, research-backed evaluation framework for RAG
+      pipelines — metrics like faithfulness, answer relevancy, and context
+      precision. Integrates with common RAG stacks. Apache-2.0."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
@@ -642,10 +645,9 @@
   author: run-llama
 
   author_provenance:
-    description: "LlamaIndex is the production RAG framework used by thousands of
-      enterprise teams. The reranking module is one of the most impactful
-      components — cross-encoder reranking reliably improves RAG answer quality
-      by 15-30%."
+    description: "LlamaIndex — a widely used open-source data framework for building
+      RAG and retrieval over private data, including reranking to improve
+      retrieval quality. MIT licensed."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
@@ -712,9 +714,9 @@
   author: infiniflow
 
   author_provenance:
-    description: "Leading open-source RAG engine combining retrieval with agent
-      capabilities. Deep document understanding including layout-aware chunking
-      for PDFs, tables, and charts."
+    description: "Open-source RAG engine with deep document understanding —
+      layout-aware chunking for PDFs, tables, and charts, plus retrieval and
+      agent capabilities. Apache-2.0."
     known_orgs: []
     auto_verified: true
     provenance_score: 3
@@ -774,9 +776,9 @@
   author: mem0ai
 
   author_provenance:
-    description: "Universal memory layer for AI agents. Multi-signal retrieval
-      (semantic + BM25 + entity). 91.6 on LoCoMo benchmark, 94.8 on LongMemEval
-      — state of the art. Used in production by thousands of AI teams."
+    description: "Open-source memory layer for AI agents — multi-signal retrieval
+      (semantic, keyword, entity) that persists user facts and history across
+      sessions without bloating the context window. Apache-2.0."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
@@ -841,9 +843,9 @@
   author: getzep
 
   author_provenance:
-    description: "Built by Zep AI. Dynamic temporal knowledge graph as agent memory
-      — handles contradictions, time-awareness, and multi-hop reasoning that
-      flat vector memory cannot."
+    description: "Built by Zep. Open-source temporal knowledge-graph memory for
+      agents — tracks evolving facts, contradictions, and time, supporting
+      multi-hop reasoning beyond flat vector memory. Apache-2.0."
     known_orgs: []
     auto_verified: true
     provenance_score: 3
@@ -903,10 +905,10 @@
   author: mattpocock
 
   author_provenance:
-    description: "Matt Pocock's personal .claude directory. The /grill-me skill
-      alone has driven 74,500 stars. Workflow enforcement patterns that stop
-      agents from skipping the steps that matter."
-    known_orgs: [ "Vercel" ]
+    description: "Matt Pocock's published Claude Code skills for agent workflows —
+      enforces engineering discipline (grilling requirements, handoffs,
+      prototype-first, PRD generation) so coding agents don't skip steps."
+    known_orgs: []
     auto_verified: false
     provenance_score: 5
 
@@ -958,10 +960,11 @@
   author: langchain-ai
 
   author_provenance:
-    description: "Built by LangChain. The leading open-source framework for building
-      stateful, multi-agent workflows. Used in production by thousands of
-      enterprise AI teams."
-    known_orgs: []
+    description: "Built by LangChain. Open-source framework for stateful,
+      multi-agent LLM workflows with cycles, branching, and checkpointing. MIT
+      licensed."
+    known_orgs:
+      - LangChain
     auto_verified: true
     provenance_score: 4
 
@@ -1016,10 +1019,10 @@
   author: obra
 
   author_provenance:
-    description: "Jesse Vincent — creator of Request Tracker, ex-Perl 5 pumpking,
-      co-founder of Keyboardio. Simon Willison describes him as one of the most
-      creative users of coding agents. 190,000 stars. Published in official
-      Claude plugin marketplace."
+    description: "Jesse Vincent — creator of Request Tracker and co-founder of
+      Keyboardio. An open-source Claude Code plugin adding structured
+      brainstorming, written plans, and verification gates for long autonomous
+      runs."
     known_orgs: []
     auto_verified: false
     provenance_score: 5
@@ -1076,10 +1079,11 @@
   author: stanfordnlp
 
   author_provenance:
-    description: "Stanford NLP. Programs LLMs rather than prompting them —
-      systematic, self-improving pipelines. Developed by Omar Khattab. Widely
-      adopted in production ML teams at Google, Databricks, and VMware."
-    known_orgs: [ "Stanford", "Google", "Databricks" ]
+    description: "From Stanford NLP (created by Omar Khattab). Open-source framework
+      that programs LLMs with declarative, self-optimizing pipelines instead of
+      hand-written prompts. MIT licensed."
+    known_orgs:
+      - Stanford
     auto_verified: true
     provenance_score: 5
 
@@ -1134,9 +1138,9 @@
   author: 567-labs
 
   author_provenance:
-    description: "Built by Jason Liu (ex-Stitch Fix ML). The standard for structured
-      outputs from LLMs using Pydantic. Used by hundreds of production AI teams.
-      10,000+ stars."
+    description: "Created by Jason Liu. A widely used library for structured, typed
+      LLM outputs using Pydantic — schema validation and automatic retries. MIT
+      licensed."
     known_orgs: []
     auto_verified: false
     provenance_score: 4
@@ -1193,10 +1197,10 @@
   author: BerriAI
 
   author_provenance:
-    description: "The unified LLM API — one interface for 100+ models across OpenAI,
-      Anthropic, Bedrock, Azure, Gemini, and more. Used in production by
-      Databricks, Hugging Face, and NASA. 20,000+ stars."
-    known_orgs: [ "Databricks", "Hugging Face" ]
+    description: "Open-source unified LLM API — one OpenAI-compatible interface
+      across 100+ providers (OpenAI, Anthropic, Bedrock, Azure, Gemini, and
+      more) with fallbacks, routing, and cost tracking. MIT licensed."
+    known_orgs: []
     auto_verified: true
     provenance_score: 5
 
@@ -1253,10 +1257,11 @@
   author: Helicone
 
   author_provenance:
-    description: "YC W23. Open-source LLM observability via a one-line proxy or
-      async logging. Used by Filevine, QA Wolf, and Sunrun. Apache-2.0 and fully
-      self-hostable."
-    known_orgs: [ "Y Combinator" ]
+    description: "YC-backed (W23). Open-source LLM observability via a one-line
+      proxy or async logging — per-request cost, latency, caching, and usage.
+      Apache-2.0, self-hostable."
+    known_orgs:
+      - Y Combinator
     auto_verified: true
     provenance_score: 4
 
@@ -1312,9 +1317,9 @@
   author: guardrails-ai
 
   author_provenance:
-    description: "The reference open-source framework for LLM output validation,
-      backed by a community Guardrails Hub of reusable validators. Apache-2.0.
-      Widely cited in production AI safety stacks."
+    description: "Open-source framework for validating and correcting LLM output
+      against typed schemas, with a community hub of reusable validators (PII,
+      toxicity, format). Apache-2.0."
     known_orgs: []
     auto_verified: true
     provenance_score: 4
@@ -1373,10 +1378,11 @@
   author: letta-ai
 
   author_provenance:
-    description: "Built by the UC Berkeley team behind the MemGPT paper, now Letta.
-      Pioneered self-editing memory and the agent-as-OS model for context
-      management. Apache-2.0."
-    known_orgs: [ "UC Berkeley" ]
+    description: "From the UC Berkeley team behind the MemGPT research (now Letta).
+      Open-source framework giving agents persistent, self-editing memory and a
+      managed context window backed by a database. Apache-2.0."
+    known_orgs:
+      - UC Berkeley
     auto_verified: true
     provenance_score: 5
 
