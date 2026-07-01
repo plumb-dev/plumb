@@ -80,10 +80,20 @@ npm install            # installs all workspaces
 
 **Run a scan from the CLI**
 
+Once published, install the CLI globally:
+
 ```bash
-cd scanner
-npx ts-node src/cli.ts scan https://github.com/owner/repo
+npm install -g @plumb/scanner
+plumb scan https://github.com/owner/repo
+plumb scan owner/repo --deep --triage        # code-pattern matching + architecture-fit filter
 # tip: export GITHUB_TOKEN=ghp_... to raise rate limits and scan private repos
+#      export ANTHROPIC_API_KEY=... for --triage
+```
+
+Or run from a clone without installing:
+
+```bash
+cd scanner && npx ts-node src/cli.ts scan https://github.com/owner/repo
 ```
 
 **Wire it into Claude Desktop / Cursor / Windsurf (MCP)**

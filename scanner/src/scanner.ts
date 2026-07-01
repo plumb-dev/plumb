@@ -50,6 +50,9 @@ export class PlumbScanner {
       this.registry.loadBundled(options.registryJson);
     } else if (options.registryDir) {
       this.registry.loadLocal(options.registryDir);
+    } else {
+      // Installed from npm — no monorepo registry dir; use the bundled snapshot.
+      this.registry.loadBundledDefault();
     }
   }
 

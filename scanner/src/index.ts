@@ -22,6 +22,7 @@ export type {
   Category,
 } from './types';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
+export { RegistryLoader } from './readers/registryLoader';
 
 // Assay scoring engine — re-scores registry entries from live GitHub + package data.
 export * from './assay';

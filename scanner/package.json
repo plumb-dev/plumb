@@ -4,12 +4,21 @@
   "description": "Plumb codebase scanner — reads a repo and matches it against the Assay registry",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "plumb": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "registry.bundled.json"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "scan": "ts-node src/cli.ts",
     "assay": "ts-node src/cli.ts assay",
-    "test": "ts-node src/assay/scorer.test.ts"
+    "test": "ts-node src/assay/scorer.test.ts",
+    "bundle": "node scripts/bundle-registry.mjs",
+    "prepack": "npm run build && npm run bundle"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

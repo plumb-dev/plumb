@@ -25,9 +25,8 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import * as path from 'path';
 import * as fs from 'fs';
-import { PlumbScanner, CATEGORIES, CATEGORY_LABELS } from '@plumb/scanner';
+import { PlumbScanner, RegistryLoader, CATEGORIES, CATEGORY_LABELS } from '@plumb/scanner';
 import type { PlumbReport, CategoryResult, RecommendationResult } from '@plumb/scanner';
-import { RegistryLoader } from '@plumb/scanner/dist/readers/registryLoader';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tool definitions
@@ -202,6 +201,7 @@ async function handleRegistry(args: RegistryArgs) {
   const registryDir = resolveRegistryDir();
   const loader = new RegistryLoader();
   if (registryDir) loader.loadLocal(registryDir);
+  else loader.loadBundledDefault(); // installed from npm — use @plumb/scanner's bundled snapshot
 
   let entries = loader.getEntries(process.env.PLUMB_ORG_ID);
 
