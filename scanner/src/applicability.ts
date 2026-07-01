@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type {
-  PlumbReport, RepoFingerprint, ApplicabilityVerdict,
+  PlumbReport, RepoFingerprint, RecommendationResult, ApplicabilityVerdict,
 } from './types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,9 +35,15 @@ const SYSTEM_PROMPT =
   '- "skip": does not apply to this architecture. Be concrete about why — the app ' +
   'is not doing RAG, is a single LLM call per request (not multi-agent), is an ' +
   'internal/low-adversarial-risk tool, or the tool is enterprise-scale overkill.\n' +
+  'Each candidate lists the signals it matched and WHERE (file:line for code ' +
+  'patterns). Weigh that evidence, not just the description: a broad dependency ' +
+  'match alone is weak, but a specific code pattern found at real call sites is ' +
+  'strong evidence the need is live in THIS code — e.g. raw JSON parsing of model ' +
+  'output (json.loads at specific routes) means a typed-output/validation tool ' +
+  'genuinely applies, even if other parts of the app return freeform text.\n' +
   'Be skeptical. Most candidates that merely matched a broad dependency are skip or ' +
-  'covered; reserve "apply" for genuine fits. One short, specific reason each. ' +
-  'Return a verdict for every candidate id.';
+  'covered; reserve "apply" for genuine fits backed by evidence. One short, ' +
+  'specific reason each. Return a verdict for every candidate id.';
 
 const schema = (ids: string[]) => ({
   type: 'object',
@@ -74,18 +80,12 @@ export class ApplicabilityFilter {
     const recs = report.categories.flatMap(c => c.recommendations);
     if (recs.length === 0) return;
 
-    const candidates = recs.map(r => ({
-      id: r.entry.id,
-      name: r.entry.name,
-      category: r.entry.category,
-      problem_solved: r.entry.problem_solved,
-    }));
-    const ids = candidates.map(c => c.id);
+    const ids = recs.map(r => r.entry.id);
 
     const user =
       `Repo profile:\n${profile(report.fingerprint)}\n\n` +
-      `Candidates:\n${candidates.map(c =>
-        `- ${c.id} [${c.category}] ${c.name}: ${c.problem_solved}`).join('\n')}`;
+      `Candidates (each lists the signals it matched and where):\n` +
+      recs.map(candidateLine).join('\n');
 
     const response = await this.anthropic.messages.create({
       model: this.model,
@@ -110,6 +110,16 @@ export class ApplicabilityFilter {
         : { verdict: 'apply', reason: '' };
     }
   }
+}
+
+/** One candidate line: the tool + the concrete signals (and code locations) it matched. */
+function candidateLine(r: RecommendationResult): string {
+  const evidence = r.matchedSignals.map(s => {
+    const locs = s.locations?.length ? ` @ ${s.locations.slice(0, 3).join(', ')}` : '';
+    return `${s.value} (${s.type}${locs})`;
+  }).join('; ');
+  return `- ${r.entry.id} [${r.entry.category}] ${r.entry.name}: ${r.entry.problem_solved}\n` +
+    `    matched: ${evidence || '(none)'}`;
 }
 
 /** A compact repo profile the model can reason about architecture from. */
