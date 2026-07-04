@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm install
+
+      - name: Validate registry
+        run: node scripts/validate-registry.mjs
+
+      - name: Build all packages
+        run: |
+          npm run build --workspace scanner
+          npm run build --workspace mcp-server
+          npm run build --workspace vscode-extension
+
+      - name: Bundle registry snapshot (scanner)
+        run: npm run bundle --workspace scanner
+
+      - name: Test
+        run: npm test --workspace scanner
