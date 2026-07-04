@@ -24,6 +24,7 @@ jobs:
         run: |
           npm run build --workspace scanner
           npm run build --workspace mcp-server
+          npm run typecheck --workspace vscode-extension   # esbuild build skips type-checking
           npm run build --workspace vscode-extension
 
       - name: Bundle registry snapshot (scanner)

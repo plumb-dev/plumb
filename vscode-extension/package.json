@@ -4,7 +4,6 @@
   "description": "Scan your codebase against the Assay registry of AI engineering best practices",
   "version": "0.1.0",
   "publisher": "plumb-dev",
-  "icon": "assets/icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -92,17 +91,23 @@
       }
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plumb-dev/plumb.git",
+    "directory": "vscode-extension"
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "watch": "tsc -p tsconfig.json --watch",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "vscode:prepublish": "node esbuild.js --production",
     "package": "vsce package"
   },
-  "dependencies": {
-    "@plumb/scanner": "file:../scanner"
-  },
   "devDependencies": {
+    "@plumb/scanner": "file:../scanner",
     "@types/node": "^20.19.43",
-    "@types/vscode": "^1.125.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.25.0",
     "typescript": "^5.9.3"
   }
 }

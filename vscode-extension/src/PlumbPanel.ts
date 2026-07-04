@@ -88,15 +88,20 @@ export class PlumbPanel implements vscode.WebviewViewProvider {
       const token = await this.resolveToken();
       const config = vscode.workspace.getConfiguration('plumb');
 
+      // Dev (monorepo): read the live registry directory. Packaged (.vsix): fall
+      // back to the registry snapshot shipped inside the extension.
       const registryDir = path.join(
         this.context.extensionPath, '..', '..', 'registry', 'entries'
       );
+      const bundledRegistry = path.join(this.context.extensionPath, 'registry.bundled.json');
+      const useDir = fs.existsSync(registryDir);
 
       const scanner = new PlumbScanner({
         githubToken: token,
         apiOnly: config.get<boolean>('apiOnly') ?? false,
         orgId: config.get<string>('orgId') || undefined,
-        registryDir: fs.existsSync(registryDir) ? registryDir : undefined,
+        registryDir: useDir ? registryDir : undefined,
+        registryJson: !useDir && fs.existsSync(bundledRegistry) ? bundledRegistry : undefined,
         onProgress: (step) => {
           this.post({ type: 'scanning', step });
         },
