@@ -32,14 +32,14 @@
   languages: [ "python", "typescript", "javascript", "go", "ruby" ]
 
   assay:
-    fork_to_star_ratio: 0.158 # 1193 forks / 7541 stars
-    monthly_active_contributors: 3
-    download_velocity: 525246 # pypi:traceloop-sdk (weekly)
-    last_commit_days_ago: 11
+    fork_to_star_ratio: 0.159 # 1196 forks / 7544 stars
+    monthly_active_contributors: 4
+    download_velocity: 547904 # pypi:traceloop-sdk (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 3
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 59
+    assay_score: 61
     pypi: traceloop-sdk
 
   signals:
@@ -80,7 +80,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -108,14 +108,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.113 # 4240 forks / 37494 stars
-    monthly_active_contributors: 27
-    download_velocity: 10029937 # npm:langfuse + pypi:langfuse (weekly)
+    fork_to_star_ratio: 0.113 # 4263 forks / 37633 stars
+    monthly_active_contributors: 23
+    download_velocity: 10145720 # npm:langfuse + pypi:langfuse (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.5
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 74
+    assay_score: 73
 
   signals:
     dependencies: [ "openai", "anthropic", "langchain", "llama-index", "litellm" ]
@@ -139,7 +139,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -168,9 +168,9 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.23 # 6619 forks / 28836 stars
-    monthly_active_contributors: 41
-    download_velocity: 5366760 # pypi:mlflow (weekly)
+    fork_to_star_ratio: 0.23 # 6633 forks / 28896 stars
+    monthly_active_contributors: 38
+    download_velocity: 5673597 # pypi:mlflow (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.8
     issue_quality_override: null
@@ -207,7 +207,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -238,9 +238,9 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.102 # 2778 forks / 27312 stars
-    monthly_active_contributors: 30
-    download_velocity: 1209997 # npm:promptfoo + pypi:promptfoo (weekly)
+    fork_to_star_ratio: 0.102 # 2792 forks / 27457 stars
+    monthly_active_contributors: 33
+    download_velocity: 1249441 # npm:promptfoo + pypi:promptfoo (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 3.3
     issue_quality_override: null
@@ -269,7 +269,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -296,14 +296,14 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.113 # 2214 forks / 19512 stars
+    fork_to_star_ratio: 0.114 # 2227 forks / 19563 stars
     monthly_active_contributors: 12
-    download_velocity: 768668 # pypi:deepeval (weekly)
+    download_velocity: 847542 # pypi:deepeval (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 3
-    assay_score: 61
+    assay_score: 62
 
   signals:
     dependencies: [ "openai", "anthropic", "langchain", "llama-index", "pydantic-ai" ]
@@ -327,7 +327,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -354,10 +354,10 @@
   languages: [ "typescript", "javascript", "markdown" ]
 
   assay:
-    fork_to_star_ratio: 0.084 # 27340 forks / 325706 stars
+    fork_to_star_ratio: 0.084 # 27543 forks / 327937 stars
     monthly_active_contributors: 3
     download_velocity: null # unpublished — category median
-    last_commit_days_ago: 4
+    last_commit_days_ago: 0
     issue_quality_score: 2
     issue_quality_override: null
     provenance_score: 5
@@ -382,7 +382,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -414,14 +414,14 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.12 # 902 forks / 7509 stars
-    monthly_active_contributors: 10
-    download_velocity: 113809 # pypi:nemoguardrails (weekly)
+    fork_to_star_ratio: 0.12 # 904 forks / 7531 stars
+    monthly_active_contributors: 11
+    download_velocity: 109213 # pypi:nemoguardrails (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 65
+    assay_score: 66
     pypi: nemoguardrails
 
   signals:
@@ -447,7 +447,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -474,10 +474,10 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.148 # 476 forks / 3216 stars
+    fork_to_star_ratio: 0.148 # 478 forks / 3220 stars
     monthly_active_contributors: 0
-    download_velocity: 30070 # pypi:llm-guard (weekly)
-    last_commit_days_ago: 130
+    download_velocity: 26901 # pypi:llm-guard (weekly)
+    last_commit_days_ago: 133
     issue_quality_score: 2.3
     issue_quality_override: null
     provenance_score: 3
@@ -505,7 +505,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -532,14 +532,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.102 # 2778 forks / 27312 stars
-    monthly_active_contributors: 30
-    download_velocity: 1209997 # npm:promptfoo + pypi:promptfoo (weekly)
+    fork_to_star_ratio: 0.102 # 2792 forks / 27457 stars
+    monthly_active_contributors: 33
+    download_velocity: 1249441 # npm:promptfoo + pypi:promptfoo (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 3
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 79
+    assay_score: 80
 
   signals:
     dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk" ]
@@ -563,7 +563,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -594,10 +594,10 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.112 # 1825 forks / 16338 stars
+    fork_to_star_ratio: 0.112 # 1830 forks / 16384 stars
     monthly_active_contributors: 7
-    download_velocity: 283404 # pypi:ragas (weekly)
-    last_commit_days_ago: 2
+    download_velocity: 290821 # pypi:ragas (weekly)
+    last_commit_days_ago: 5
     issue_quality_score: 2.3
     issue_quality_override: null
     provenance_score: 3
@@ -634,7 +634,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -661,10 +661,10 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.162 # 8568 forks / 52922 stars
+    fork_to_star_ratio: 0.162 # 8591 forks / 52963 stars
     monthly_active_contributors: 5
-    download_velocity: 404070 # pypi:llama_index (weekly)
-    last_commit_days_ago: 2
+    download_velocity: 413581 # pypi:llama_index (weekly)
+    last_commit_days_ago: 5
     issue_quality_score: 2.3
     issue_quality_override: null
     provenance_score: 4
@@ -703,7 +703,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -730,8 +730,8 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.12 # 11334 forks / 94245 stars
-    monthly_active_contributors: 52
+    fork_to_star_ratio: 0.12 # 11351 forks / 94434 stars
+    monthly_active_contributors: 56
     download_velocity: null # unpublished — category median
     last_commit_days_ago: 0
     issue_quality_score: 1.8
@@ -761,7 +761,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -792,14 +792,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.119 # 8221 forks / 69063 stars
-    monthly_active_contributors: 2
-    download_velocity: 511840 # pypi:mem0ai (weekly)
-    last_commit_days_ago: 9
+    fork_to_star_ratio: 0.119 # 8237 forks / 69240 stars
+    monthly_active_contributors: 3
+    download_velocity: 553601 # pypi:mem0ai (weekly)
+    last_commit_days_ago: 1
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 3
-    assay_score: 55
+    assay_score: 57
     pypi: mem0ai
 
   signals:
@@ -832,7 +832,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -859,14 +859,14 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.103 # 3377 forks / 32848 stars
-    monthly_active_contributors: 5
-    download_velocity: 190554 # pypi:graphiti-core (weekly)
+    fork_to_star_ratio: 0.103 # 3391 forks / 32942 stars
+    monthly_active_contributors: 6
+    download_velocity: 220265 # pypi:graphiti-core (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.5
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 61
+    assay_score: 62
     pypi: graphiti-core
 
   signals:
@@ -890,7 +890,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -921,10 +921,10 @@
   languages: [ "typescript", "javascript", "markdown" ]
 
   assay:
-    fork_to_star_ratio: 0.084 # 27340 forks / 325706 stars
+    fork_to_star_ratio: 0.084 # 27543 forks / 327937 stars
     monthly_active_contributors: 3
     download_velocity: null # unpublished — category median
-    last_commit_days_ago: 4
+    last_commit_days_ago: 0
     issue_quality_score: 2
     issue_quality_override: null
     provenance_score: 5
@@ -949,7 +949,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -977,14 +977,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.173 # 7775 forks / 45026 stars
+    fork_to_star_ratio: 0.173 # 7795 forks / 45156 stars
     monthly_active_contributors: 16
-    download_velocity: 14389308 # pypi:langgraph (weekly)
+    download_velocity: 15211789 # pypi:langgraph (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.3
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 71
+    assay_score: 72
 
   signals:
     dependencies: [ "openai", "anthropic", "langchain" ]
@@ -1008,7 +1008,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1036,14 +1036,14 @@
   languages: [ "markdown", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.089 # 28382 forks / 318396 stars
+    fork_to_star_ratio: 0.089 # 28603 forks / 321795 stars
     monthly_active_contributors: 1
     download_velocity: null # unpublished — category median
-    last_commit_days_ago: 12
+    last_commit_days_ago: 15
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 49
+    assay_score: 47
 
   signals:
     dependencies: [ "@anthropic-ai/claude-code" ]
@@ -1064,7 +1064,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1096,10 +1096,10 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.09 # 3520 forks / 39092 stars
+    fork_to_star_ratio: 0.09 # 3530 forks / 39137 stars
     monthly_active_contributors: 13
-    download_velocity: 1436530 # pypi:dspy (weekly)
-    last_commit_days_ago: 4
+    download_velocity: 1531421 # pypi:dspy (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 2
     issue_quality_override: null
     provenance_score: 4
@@ -1127,7 +1127,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1154,10 +1154,10 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.098 # 1385 forks / 14114 stars
+    fork_to_star_ratio: 0.099 # 1394 forks / 14129 stars
     monthly_active_contributors: 6
-    download_velocity: 2497550 # pypi:instructor (weekly)
-    last_commit_days_ago: 1
+    download_velocity: 2607634 # pypi:instructor (weekly)
+    last_commit_days_ago: 0
     issue_quality_score: 3.5
     issue_quality_override: null
     provenance_score: 2
@@ -1186,7 +1186,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1213,14 +1213,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.21 # 13325 forks / 63344 stars
-    monthly_active_contributors: 43
-    download_velocity: 23634409 # pypi:litellm (weekly)
+    fork_to_star_ratio: 0.211 # 13422 forks / 63544 stars
+    monthly_active_contributors: 39
+    download_velocity: 24853370 # pypi:litellm (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 4
-    assay_score: 85
+    assay_score: 84
 
   signals:
     dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk" ]
@@ -1246,7 +1246,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1274,14 +1274,14 @@
   languages: [ "python", "typescript", "javascript" ]
 
   assay:
-    fork_to_star_ratio: 0.112 # 705 forks / 6283 stars
-    monthly_active_contributors: 2
-    download_velocity: 236 # npm:helicone + pypi:helicone (weekly)
-    last_commit_days_ago: 4
+    fork_to_star_ratio: 0.112 # 704 forks / 6290 stars
+    monthly_active_contributors: 1
+    download_velocity: 430 # npm:helicone + pypi:helicone (weekly)
+    last_commit_days_ago: 1
     issue_quality_score: 2
     issue_quality_override: null
     provenance_score: 3
-    assay_score: 39
+    assay_score: 36
 
   signals:
     dependencies: [ "openai", "anthropic", "@anthropic-ai/sdk", "langchain", "litellm" ]
@@ -1306,7 +1306,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1333,14 +1333,14 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.098 # 743 forks / 7614 stars
+    fork_to_star_ratio: 0.098 # 746 forks / 7626 stars
     monthly_active_contributors: 0
-    download_velocity: 19517 # pypi:guardrails-ai (weekly)
-    last_commit_days_ago: 81
+    download_velocity: 20185 # pypi:guardrails-ai (weekly)
+    last_commit_days_ago: 84
     issue_quality_score: 2.8
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 42
+    assay_score: 43
     pypi: guardrails-ai
 
   signals:
@@ -1367,7 +1367,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1395,14 +1395,14 @@
   languages: [ "python", "typescript" ]
 
   assay:
-    fork_to_star_ratio: 0.105 # 2674 forks / 25463 stars
-    monthly_active_contributors: 2
-    download_velocity: 1653 # pypi:letta (weekly)
-    last_commit_days_ago: 28
+    fork_to_star_ratio: 0.105 # 2678 forks / 25489 stars
+    monthly_active_contributors: 0
+    download_velocity: 2024 # pypi:letta (weekly)
+    last_commit_days_ago: 31
     issue_quality_score: 2.5
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 44
+    assay_score: 36
     pypi: letta
 
   signals:
@@ -1429,7 +1429,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1456,14 +1456,14 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.106 # 3522 forks / 33347 stars
-    monthly_active_contributors: 10
-    download_velocity: 47786 # pypi:cognee (weekly)
+    fork_to_star_ratio: 0.106 # 3534 forks / 33407 stars
+    monthly_active_contributors: 12
+    download_velocity: 53424 # pypi:cognee (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.5
     issue_quality_override: null
     provenance_score: 5
-    assay_score: 62
+    assay_score: 63
 
   signals:
     dependencies: [ "openai", "anthropic", "llama-index", "langchain" ]
@@ -1487,7 +1487,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1514,9 +1514,9 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.129 # 3475 forks / 27019 stars
-    monthly_active_contributors: 90
-    download_velocity: 166255 # pypi:haystack-ai (weekly)
+    fork_to_star_ratio: 0.129 # 3481 forks / 27050 stars
+    monthly_active_contributors: 91
+    download_velocity: 176438 # pypi:haystack-ai (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 3.3
     issue_quality_override: null
@@ -1555,7 +1555,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
@@ -1581,9 +1581,9 @@
   languages: [ "python" ]
 
   assay:
-    fork_to_star_ratio: 0.151 # 9206 forks / 60989 stars
-    monthly_active_contributors: 43
-    download_velocity: 604974 # pypi:crewai (weekly)
+    fork_to_star_ratio: 0.151 # 9228 forks / 61104 stars
+    monthly_active_contributors: 40
+    download_velocity: 594011 # pypi:crewai (weekly)
     last_commit_days_ago: 0
     issue_quality_score: 2.0
     issue_quality_override: null
@@ -1615,7 +1615,7 @@
     verified: true
     verified_by: plumb-maintainers
     last_reviewed: 2026-06-22
-    last_auto_scored: 2026-11-16T15:09:36.194Z
+    last_auto_scored: 2026-11-19T15:25:09.354Z
     registry_version: "1.0.0"
     visibility: public
     org_id: null
